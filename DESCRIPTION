@@ -1,0 +1,18 @@
+Package: settingsSync
+Type: Package
+Title: Rstudio Addin to sync settings and keymaps
+Version: 1.0.0
+Author: notPlancha
+Maintainer: notPlancha <Andre_Plancha@iscte-iul.pt>
+Description: Rstudio Addin to sync settings and keymaps
+License: Unlicense
+Encoding: UTF-8
+LazyData: true
+Depends:
+  R (>= 4.3)
+Imports: 
+  rstudioapi,
+  rstudio.prefs,
+  googledrive,
+  dplyr,
+  rjson
