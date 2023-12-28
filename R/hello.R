@@ -1,5 +1,5 @@
-push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bindings = T, bar = NULL) {
-  if(bar |> is.null()) bar <- \() {invisible()}
+push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bindings = T, progBar = NULL) {
+  if(progBar |> is.null()) progBar <- \() {invisible()}
   if(auth) {googledrive::drive_auth()}
   rstudio_path() -> path
 
@@ -9,16 +9,17 @@ push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bin
 
   tryCatch(googledrive::drive_mkdir("rstudio"), error = \(x) cli::cli_alert_warning("Folder already exists on GoogleDrive, will substitute"))
   if(do_addins)            googledrive::drive_put(path = "rstudio/addins.json", media = addins)
-  bar()
+  progBar()
   if(do_editor_bindings)   googledrive::drive_put(path = "rstudio/editor_bindings.json", media = editor_bindings)
-  bar()
+  progBar()
   if(do_rstudio_bindings)  googledrive::drive_put(path = "rstudio/rstudio_bindings.json", media = rstudio_bindings)
-  bar()
+  progBar()
 }
 
 pull <- function(
     auth = F,
-    addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL) {
+    addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
+  ) {
   if(auth) {googledrive::drive_auth()}
   rstudio_path() -> path
 
@@ -41,10 +42,10 @@ pull <- function(
 
 # funcao principal, so auth fica true
 sync <- function(auth = T) {
-  bar <- progress_bar(6)
+  progBar <- progress_bar(6)
   # pull, merge and push
   if (auth) googledrive::drive_auth()
-  addins_gd           <- read_from_gd("addins", bar = bar)
+  addins_gd           <- read_from_gd("addins", progBar = progBar)
   addins_local        <- read_from_local("addins")
   # check if they're the same
   if(identical(addins_gd, addins_local)) {
@@ -54,7 +55,7 @@ sync <- function(auth = T) {
     addins_to_sync      <- full_choose(addins_merged) |> jsonlite::toJSON(pretty = T, auto_unbox =T)
   }
 
-  rstudio_bindings_gd <- read_from_gd("rstudio_bindings", bar = bar)
+  rstudio_bindings_gd <- read_from_gd("rstudio_bindings", progBar = progBar)
   rstudio_bindings_local <- read_from_local("rstudio_bindings")
   if(identical(rstudio_bindings_gd, rstudio_bindings_local)) {
     rstudio_bindings_to_sync <- FALSE
@@ -63,7 +64,7 @@ sync <- function(auth = T) {
     rstudio_bindings_to_sync <- full_choose(rstudio_bindings_merged) |> jsonlite::toJSON(pretty = T, auto_unbox = T)
   }
 
-  editor_bindings_gd  <- read_from_gd("editor_bindings", bar = bar)
+  editor_bindings_gd  <- read_from_gd("editor_bindings", progBar = progBar)
   editor_bindings_local  <- read_from_local("editor_bindings")
   if(identical(editor_bindings_gd, editor_bindings_local)) {
     editor_bindings_to_sync <- FALSE
@@ -89,18 +90,18 @@ sync <- function(auth = T) {
       do_addins = !isFALSE(addins_to_sync),
       do_editor_bindings = !isFALSE(editor_bindings_to_sync),
       do_rstudio_bindings = !isFALSE(rstudio_bindings_to_sync),
-      bar = bar
+      progBar = progBar
     )
     cli::cli_alert_success("Done, restart Rstudio to apply")
   } else {
     cli::cli_alert_info("No changes in any setting detected, both in cloud and local")
-    bar(finish = T)
+    progBar(finish = T)
   }
 }
 
 
 # rstudio_bindings, editor_bindings, addins
-read_from_gd <- function(what = "rstudio_bindings", auth = F, bar = NULL) {
+read_from_gd <- function(what = "rstudio_bindings", auth = F, progBar = NULL) {
   if (auth) {googledrive::drive_auth()}
   googledrive::local_drive_quiet()
   file <- paste0("rstudio/", what,".json") |>
@@ -110,7 +111,7 @@ read_from_gd <- function(what = "rstudio_bindings", auth = F, bar = NULL) {
     googledrive::drive_read_string(encoding = "UTF-8") |>
     jsonlite::fromJSON() |>
     as.data.frame() -> ret
-  if (bar |> is.null() |> isFALSE()) bar()
+  if (progBar |> is.null() |> isFALSE()) progBar()
   ret
 }
 
