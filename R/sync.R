@@ -175,25 +175,6 @@ choose <- function(keybind, option1, option2) {
   )
 }
 
-# usethis::is_windows copy
-is_windows <- function() {
-  .Platform$OS.type == "windows"
-}
-
-
-rstudio_path <- function() {
-  rappdirs::user_config_dir() |> file.path(ifelse(is_windows(), "Rstudio", "rstudio"))
-}
-
-
-"%ni%" <- Negate("%in%")
-
-
-# readr::empty_file, modified
-empty_json_file <- function(x) {
-  is.character(x) && file.exists(x) && file.info(x, extra_cols = FALSE)$size <= 2
-}
-
 
 progress_bar <- \(n) {
   id <- cli::cli_progress_bar(total = n, .auto_close = F)
@@ -209,7 +190,4 @@ progress_bar <- \(n) {
     }
   }
 }
-
-# none are True (returns true if all x is False)
-none <- \(x) x |> all() |> isFALSE()
 

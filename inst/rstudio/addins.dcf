@@ -1,0 +1,4 @@
+Name: Sync Settings
+Description: Sync settings, keymaps and keyboard with google drive
+Binding: sync
+Interactive: true
