@@ -19,7 +19,7 @@ push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bin
 pull <- function(
     auth = F,
     addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
-  ) {
+) {
   if(auth) {googledrive::drive_auth()}
   rstudio_path() -> path
 
@@ -196,18 +196,18 @@ empty_json_file <- function(x) {
 
 
 progress_bar <- \(n) {
- id <- cli::cli_progress_bar(total = n, .auto_close = F)
- counter <- 0
- \(finish = F) {
-   if (finish) counter = n
-   counter <<- counter + 1
-   if(counter >= n) {
-     cli::cli_progress_done(id = id)
-     cli::cli_progress_cleanup()
-   } else {
-     cli::cli_progress_update(id = id)
-   }
- }
+  id <- cli::cli_progress_bar(total = n, .auto_close = F)
+  counter <- 0
+  \(finish = F) {
+    if (finish) counter = n
+    counter <<- counter + 1
+    if(counter >= n) {
+      cli::cli_progress_done(id = id)
+      cli::cli_progress_cleanup()
+    } else {
+      cli::cli_progress_update(id = id)
+    }
+  }
 }
 
 # none are True (returns true if all x is False)
