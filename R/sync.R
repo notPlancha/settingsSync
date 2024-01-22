@@ -1,3 +1,30 @@
+#' Push Rstudio Settings
+#'
+#' Pushes Rstudio settings to Google Drive, without pulling. This is just a
+#' helper function for [sync()], the main function, but can be used alone, although
+#' this fucntion will not do any checking, and will just override.
+#' Because of the way [googledrive::drive_put] is built, this function reads from
+#' the files directly.
+#'
+#' @param auth boolean, if TRUE will authenticate with Google Drive, if FALSE will
+#' use the already authenticated. Default is FALSE, because [sync()]
+#' will authenticate.
+#' @param do_addins,do_editor_bindings,do_rstudio_bindings booleans, if TRUE will
+#' push the respective file. Default is TRUE.
+#' @param progBar function, designed to work with [progress_bar()]. Runs after
+#' each file is pushed.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   push()
+#'   # will push all settings to gd, overwriting them
+#'   push(do_addins = F)
+#'   # will push only editor and rstudio bindings
+#'   push(auth = T)
+#'   # will authenticate and push all settings
+#' }
 push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bindings = T, progBar = NULL) {
   if(progBar |> is.null()) progBar <- \() {invisible()}
   if(auth) {googledrive::drive_auth()}
@@ -16,6 +43,32 @@ push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bin
   progBar()
 }
 
+#' Pull Rstudio Settings
+#'
+#' Pulls Rstudio settings from Google Drive, without pushing. This is just a
+#' helper function for [sync()], the main function, but can be used alone, although
+#' this fucntion will not do any checking, and will just override.
+#'
+#' @inheritParams push
+#' @param addins_gd,editor_bindings_gd,rstudio_bindings_gd character, the json
+#' string to be written to the respective file; if NULL, will read from
+#' Google Drive. Can also be FALSE to not write that specific file.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  pull()
+#'  # will pull all settings from gd, overwriting them
+#'  pull(auth = T)
+#'  # will authenticate and pull all settings
+#'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}', editor_bindings_gd = F, rstudio_bindings_gd = F)
+#'  # will write to addins.json the string '{"insertPipeOperator": "Shift+Tab"}'
+#'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
+#'  # will write to addins.json the string '{"insertPipeOperator": "Shift+Tab"}',
+#'  # and pull the other 2 files from gd
+#' }
+#' @seealso [read_from_gd()], [sync()], [push()]
 pull <- function(
     auth = F,
     addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
@@ -40,8 +93,24 @@ pull <- function(
   if(!isFALSE(rstudio_bindings_gd)) cat(rstudio_bindings_gd, file=rstudio_bindings)
 }
 
-# funcao principal, so auth fica true
-sync <- function(auth = T) {
+# TODO make prog bar optional?
+#' Sync Rstudio Settings
+#'
+#' Gets the settings from Google Drive and from the local files, and merges them.
+#' If there are conflicts, will ask the user to resolve them. Finally, will
+#' write the merged settings to the local files, and push them to Google Drive.
+#'
+#' @param auth boolean, if TRUE will authenticate with Google Drive, if FALSE will
+#' use the already authenticated. Default is TRUE, which difers from [push()] and
+#' [pull()].
+#' @param write boolean, if TRUE will write the merged settings to the local files,
+#' and push them to Google Drive. FALSE essentially just makes conflict resolution,
+#' without changing any files (basically a dry run). Default is TRUE.
+#' @export
+#'
+#' @seealso [push()], [pull()]
+#' @examples
+sync <- function(auth = T, write = T) {
   progBar <- progress_bar(6)
   # pull, merge and push
   if (auth) googledrive::drive_auth()
@@ -72,7 +141,7 @@ sync <- function(auth = T) {
     editor_bindings_merged  <- dplyr::bind_rows(editor_bindings_local, editor_bindings_gd)
     editor_bindings_to_sync <- full_choose(editor_bindings_merged) |> jsonlite::toJSON(pretty = T, auto_unbox = T)
   }
-  # if none didn't change
+  if(!write) {return(invisible())}
   if(
     list(addins_to_sync, rstudio_bindings_to_sync, editor_bindings_to_sync) |>
     lapply(\(x) x |> isFALSE()) |>
@@ -101,7 +170,27 @@ sync <- function(auth = T) {
 
 
 # rstudio_bindings, editor_bindings, addins
-read_from_gd <- function(what = "rstudio_bindings", auth = F, progBar = NULL) {
+#' Read from Google Drive a JSON file inside rstudio folder
+#'
+#' This is a helper function for [pull()] and [sync()] that:
+#' * reads a json file from Google Drive inside the rstudio folder
+#' * converts it to a data frame (to resolve conflicts in the future)
+#'
+#' @param what One of c("rstudio_bindings", "editor_bindings", "addins"),
+#' the file to read
+#' @inheritParams push
+#'
+#' @returns A data frame with the contents of the file, converted from json
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  read_from_gd("rstudio_bindings")
+#'  read_from_gd("editor_bindings")
+#'  read_from_gd("addins")
+#' }
+#' @seealso [read_from_local()], [sync()], [jsonlite::fromJSON()], [googledrive::drive_read_string()]
+read_from_gd <- function(what, auth = F, progBar = NULL) {
   if (auth) {googledrive::drive_auth()}
   googledrive::local_drive_quiet()
   file <- paste0("rstudio/", what,".json") |>
@@ -115,8 +204,23 @@ read_from_gd <- function(what = "rstudio_bindings", auth = F, progBar = NULL) {
   ret
 }
 
-# rstudio_bindings, editor_bindings, addins
-read_from_local <- function(what = "rstudio_bindings") {
+#' Read from local a JSON file inside rstudio folder
+#'
+#' This is a helper function for [sync()] that:
+#' * reads a json file from the local rstudio folder
+#' * converts it to a data frame (to resolve conflicts in the future)
+#'
+#' @inheritParams read_from_gd
+#' @seealso [read_from_gd()], [push()], [sync()], [jsonlite::read_json()]
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   read_from_local("rstudio_bindings")
+#'   read_from_local("editor_bindings")
+#'   read_from_local("addins")
+#' }
+read_from_local <- function() {
   rstudio_path() |> file.path("keybindings", paste0(what,".json")) -> path
   if (path |> empty_json_file()){
     # return empty data frame
@@ -126,6 +230,22 @@ read_from_local <- function(what = "rstudio_bindings") {
   }
 }
 
+
+#' Interactice Conflict Resolution
+#'
+#' Used to resolve conflicts in [sync()]. Will ask the user to choose between cloud
+#' or local, or to choose all cloud or all local.
+#'
+#' @param df A merged data frame with 2 rows, with the contents of the local and cloud files
+#'
+#' @returns df, ready to be jsoned, without conflicts
+#'
+#' @examples
+#' \dontrun{
+#'   full_choose(data.frame(a = c(1,2), b = c(3,4)))
+#' }
+#' @seealso [sync()], [choose()]
+# dont export
 full_choose <- function(df) {
   if (nrow(df) <= 1) return(df)
   # if a column has NA choose the other option
@@ -161,6 +281,19 @@ full_choose <- function(df) {
   ret
 }
 
+#' Iteration of [choose()]
+#'
+#' @param keybind Conflictive keybind
+#' @param option1 First option
+#' @param option2 Second option
+#'
+#' @return The chosen option
+#'
+#' @examples
+#' \dontrun{
+#'  choose("Ctrl+Shift+M", "Insert magrittr pipe", "Insert pipe operator")
+#' }
+# dont export
 choose <- function(keybind, option1, option2) {
   option1 <- ifelse(trimws(option1) == "", "[Removed assigment]", option1)
   option2 <- ifelse(trimws(option2) == "", "[Removed assigment]", option2)
@@ -175,6 +308,22 @@ choose <- function(keybind, option1, option2) {
   )
 }
 
+
+#' Progress Bar Closure
+#'
+#' Each time the closure is called will update the progress bar
+#'
+#' @param n Total number of iterations
+#'
+#' @return A function/closure that when called will update the progress bar
+#'
+#' @examples
+#'  pb <- progress_bar(10)
+#'  for (i in 1:10) {
+#'   pb()
+#'   Sys.sleep(0.1)
+#'  }
+#'  pb(finish = T)
 
 progress_bar <- \(n) {
   id <- cli::cli_progress_bar(total = n, .auto_close = F)
