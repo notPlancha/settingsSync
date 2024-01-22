@@ -3,4 +3,4 @@ library(devtools)
 library(conflicted)
 d <- desc::desc()
 
-tryit <- \() {load_all()}
+tryit <- \() {devtools::load_all()}
