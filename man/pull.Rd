@@ -29,7 +29,10 @@ this fucntion will not do any checking, and will just override.
 \dontrun{
  pull()         # will pull all settings from gd, overwriting them
  pull(auth= TRUE) # will authenticate and pull all settings
- pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}', editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE)
+ pull(
+  addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
+  editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE
+ )
  # will write to addins.json the string
  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
  # will write to addins.json the stringand pull the other 2 files from gd
