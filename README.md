@@ -16,8 +16,5 @@ pak::pak("notPlancha/settingsSync")
 ## Usage
 You can directly call `settingsSync::sync()`, or use the Rstudio Addin (they do the same thing); and follow the instructions. The extension pulls the settings from Google Drive (if any), tries to merge them with the local settings (the package has conflict resolution), and then pushes the merged settings to Google Drive.
 
-## Docs
-TODO
-
 ## Contributing
 Feel free to open an issue or a PR.
