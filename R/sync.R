@@ -108,7 +108,7 @@ pull <- function(
 #' @seealso [push()], [pull()]
 #' @examples
 #' \dontrun{
-#'   sync()          # will sync all settings, is what's run when called by addin
+#'   sync()             # will sync all settings, is what's run when called by addin
 #'   sync(write= FALSE) # dry run, will not write to files or push to gd
 #'   sync(auth= FALSE)  # will not authenticate with gd, will use already authenticated
 #' }
@@ -255,7 +255,7 @@ full_choose <- function(df) {
   # if a column is different then let user choose between the 2
   forAllChosen <- NULL
   ret <- list()
-  for (i in 1:ncol(df)) {
+  for (i in seq_along(df)) {
     name <- names(df)[i]
     chosen <- NULL
     if (df[1, i] != df[2, i]) {

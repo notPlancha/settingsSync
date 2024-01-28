@@ -22,7 +22,7 @@ write the merged settings to the local files, and push them to Google Drive.
 }
 \examples{
 \dontrun{
-  sync()          # will sync all settings, is what's run when called by addin
+  sync()             # will sync all settings, is what's run when called by addin
   sync(write= FALSE) # dry run, will not write to files or push to gd
   sync(auth= FALSE)  # will not authenticate with gd, will use already authenticated
 }

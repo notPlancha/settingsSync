@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/notPlancha/settingsSync/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/notPlancha/settingsSync/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # settingsSync
 R package and Rstudio Addin to sync its settings, keymaps and keyboard shortcuts, using Google Drive.
 
