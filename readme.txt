@@ -1,1 +1,0 @@
-TODO readme, http://rcs.bu.edu/examples/r/tutorials/BuildingPackages/r-project-setup.html

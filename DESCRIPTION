@@ -8,7 +8,7 @@ Author: notPlancha [aut, cre]
 Maintainer: notPlancha <Andre_Plancha@iscte-iul.pt>
 Description: Rstudio Addin to sync settings, keymaps and keyboard
     shortcuts, using Google Drive.
-License: Apache License (== 2)
+License: Apache License (== 2) + file LICENSE
 URL: https://github.com/notPlancha/settingsSync
 BugReports: https://github.com/notPlancha/settingsSync/issues
 Depends:
@@ -22,3 +22,4 @@ Imports:
     rappdirs
 Encoding: UTF-8
 NeedsCompilation: no
+RoxygenNote: 7.3.0

@@ -18,14 +18,11 @@
 #'
 #' @examples
 #' \dontrun{
-#'   push()
-#'   # will push all settings to gd, overwriting them
-#'   push(do_addins = F)
-#'   # will push only editor and rstudio bindings
-#'   push(auth = T)
-#'   # will authenticate and push all settings
+#'   push()              # will push all settings to gd, overwriting them
+#'   push(do_addins= FALSE) # will push only editor and rstudio bindings
+#'   push(auth= TRUE)      # will authenticate and push all settings
 #' }
-push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bindings = T, progBar = NULL) {
+push <- function(auth= FALSE, do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
   if(progBar |> is.null()) progBar <- \() {invisible()}
   if(auth) {googledrive::drive_auth()}
   rstudio_path() -> path
@@ -58,19 +55,16 @@ push <- function(auth = F, do_addins = T, do_editor_bindings = T, do_rstudio_bin
 #'
 #' @examples
 #' \dontrun{
-#'  pull()
-#'  # will pull all settings from gd, overwriting them
-#'  pull(auth = T)
-#'  # will authenticate and pull all settings
-#'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}', editor_bindings_gd = F, rstudio_bindings_gd = F)
-#'  # will write to addins.json the string '{"insertPipeOperator": "Shift+Tab"}'
+#'  pull()         # will pull all settings from gd, overwriting them
+#'  pull(auth= TRUE) # will authenticate and pull all settings
+#'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}', editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE)
+#'  # will write to addins.json the string
 #'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
-#'  # will write to addins.json the string '{"insertPipeOperator": "Shift+Tab"}',
-#'  # and pull the other 2 files from gd
+#'  # will write to addins.json the stringand pull the other 2 files from gd
 #' }
 #' @seealso [read_from_gd()], [sync()], [push()]
 pull <- function(
-    auth = F,
+    auth= FALSE,
     addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
 ) {
   if(auth) {googledrive::drive_auth()}
@@ -110,7 +104,12 @@ pull <- function(
 #'
 #' @seealso [push()], [pull()]
 #' @examples
-sync <- function(auth = T, write = T) {
+#' \dontrun{
+#'   sync()          # will sync all settings, is what's run when called by addin
+#'   sync(write= FALSE) # dry run, will not write to files or push to gd
+#'   sync(auth= FALSE)  # will not authenticate with gd, will use already authenticated
+#' }
+sync <- function(auth= TRUE, write= TRUE) {
   progBar <- progress_bar(6)
   # pull, merge and push
   if (auth) googledrive::drive_auth()
@@ -121,7 +120,7 @@ sync <- function(auth = T, write = T) {
     addins_to_sync <- FALSE
   } else {
     addins_merged       <- dplyr::bind_rows(addins_local, addins_gd)
-    addins_to_sync      <- full_choose(addins_merged) |> jsonlite::toJSON(pretty = T, auto_unbox =T)
+    addins_to_sync      <- full_choose(addins_merged) |> jsonlite::toJSON(pretty= TRUE, auto_unbox =T)
   }
 
   rstudio_bindings_gd <- read_from_gd("rstudio_bindings", progBar = progBar)
@@ -130,7 +129,7 @@ sync <- function(auth = T, write = T) {
     rstudio_bindings_to_sync <- FALSE
   } else {
     rstudio_bindings_merged <- dplyr::bind_rows(rstudio_bindings_local, rstudio_bindings_gd)
-    rstudio_bindings_to_sync <- full_choose(rstudio_bindings_merged) |> jsonlite::toJSON(pretty = T, auto_unbox = T)
+    rstudio_bindings_to_sync <- full_choose(rstudio_bindings_merged) |> jsonlite::toJSON(pretty= TRUE, auto_unbox= TRUE)
   }
 
   editor_bindings_gd  <- read_from_gd("editor_bindings", progBar = progBar)
@@ -139,7 +138,7 @@ sync <- function(auth = T, write = T) {
     editor_bindings_to_sync <- FALSE
   } else {
     editor_bindings_merged  <- dplyr::bind_rows(editor_bindings_local, editor_bindings_gd)
-    editor_bindings_to_sync <- full_choose(editor_bindings_merged) |> jsonlite::toJSON(pretty = T, auto_unbox = T)
+    editor_bindings_to_sync <- full_choose(editor_bindings_merged) |> jsonlite::toJSON(pretty= TRUE, auto_unbox= TRUE)
   }
   if(!write) {return(invisible())}
   if(
@@ -149,13 +148,13 @@ sync <- function(auth = T, write = T) {
     none()
   ) {
     pull(
-      auth = F,
+      auth= FALSE,
       addins_gd = addins_to_sync,
       editor_bindings_gd = editor_bindings_to_sync,
       rstudio_bindings_gd = rstudio_bindings_to_sync
     )
     push(
-      auth = F,
+      auth= FALSE,
       do_addins = !isFALSE(addins_to_sync),
       do_editor_bindings = !isFALSE(editor_bindings_to_sync),
       do_rstudio_bindings = !isFALSE(rstudio_bindings_to_sync),
@@ -164,7 +163,7 @@ sync <- function(auth = T, write = T) {
     cli::cli_alert_success("Done, restart Rstudio to apply")
   } else {
     cli::cli_alert_info("No changes in any setting detected, both in cloud and local")
-    progBar(finish = T)
+    progBar(finish= TRUE)
   }
 }
 
@@ -190,7 +189,7 @@ sync <- function(auth = T, write = T) {
 #'  read_from_gd("addins")
 #' }
 #' @seealso [read_from_local()], [sync()], [jsonlite::fromJSON()], [googledrive::drive_read_string()]
-read_from_gd <- function(what, auth = F, progBar = NULL) {
+read_from_gd <- function(what, auth= FALSE, progBar = NULL) {
   if (auth) {googledrive::drive_auth()}
   googledrive::local_drive_quiet()
   file <- paste0("rstudio/", what,".json") |>
@@ -220,7 +219,7 @@ read_from_gd <- function(what, auth = F, progBar = NULL) {
 #'   read_from_local("editor_bindings")
 #'   read_from_local("addins")
 #' }
-read_from_local <- function() {
+read_from_local <- function(what) {
   rstudio_path() |> file.path("keybindings", paste0(what,".json")) -> path
   if (path |> empty_json_file()){
     # return empty data frame
@@ -230,7 +229,7 @@ read_from_local <- function() {
   }
 }
 
-
+# dont export
 #' Interactice Conflict Resolution
 #'
 #' Used to resolve conflicts in [sync()]. Will ask the user to choose between cloud
@@ -245,7 +244,6 @@ read_from_local <- function() {
 #'   full_choose(data.frame(a = c(1,2), b = c(3,4)))
 #' }
 #' @seealso [sync()], [choose()]
-# dont export
 full_choose <- function(df) {
   if (nrow(df) <= 1) return(df)
   # if a column has NA choose the other option
@@ -281,6 +279,7 @@ full_choose <- function(df) {
   ret
 }
 
+# dont export
 #' Iteration of [choose()]
 #'
 #' @param keybind Conflictive keybind
@@ -293,7 +292,6 @@ full_choose <- function(df) {
 #' \dontrun{
 #'  choose("Ctrl+Shift+M", "Insert magrittr pipe", "Insert pipe operator")
 #' }
-# dont export
 choose <- function(keybind, option1, option2) {
   option1 <- ifelse(trimws(option1) == "", "[Removed assigment]", option1)
   option2 <- ifelse(trimws(option2) == "", "[Removed assigment]", option2)
@@ -318,17 +316,16 @@ choose <- function(keybind, option1, option2) {
 #' @return A function/closure that when called will update the progress bar
 #'
 #' @examples
-#'  pb <- progress_bar(10)
+#'  pb <- settingsSync:::progress_bar(10)
 #'  for (i in 1:10) {
 #'   pb()
 #'   Sys.sleep(0.1)
 #'  }
-#'  pb(finish = T)
-
+#'  pb(finish = TRUE)
 progress_bar <- \(n) {
-  id <- cli::cli_progress_bar(total = n, .auto_close = F)
+  id <- cli::cli_progress_bar(total = n, .auto_close= FALSE)
   counter <- 0
-  \(finish = F) {
+  \(finish= FALSE) {
     if (finish) counter = n
     counter <<- counter + 1
     if(counter >= n) {
