@@ -1,0 +1,11 @@
+[project]
+name = "settingsSync"
+authors = ["notPlancha <Andre_Plancha@iscte-iul.pt>"]
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[tasks]
+hook-install = "pre-commit install --hook-type pre-push"
+
+[dependencies]
+pre-commit = ">=3.6.0,<3.7"

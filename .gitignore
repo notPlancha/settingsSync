@@ -6,3 +6,6 @@
 
 temp.*
 temp/
+# pixi environments
+.pixi
+
