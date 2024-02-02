@@ -1,0 +1,12 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# R specific hooks: https://github.com/lorenzwalthert/precommit
+repos:
+-   repo: local
+    hooks:
+    - id: up-dev-version
+      name: up-dev-version
+      description: Bumps the dev version in DESCRIPTION
+      entry: pixi run up-dev
+# TODO check extrachecks
+# TODO check the email

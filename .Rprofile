@@ -3,10 +3,11 @@ if (interactive()) {
   require(devtools)
   require(conflicted)
   require(desc)
+  # pak("r-lib/desc") # theres a bug
   # pak("r-lib/revdepcheck")
   # pak("jumpingrivers/inteRgrate")
   ## https://www.r-bloggers.com/2020/07/how-to-write-your-own-r-package-and-publish-it-on-cran/
-
+  ## https://github.com/DavisVaughan/extrachecks
   d <- desc::desc()
   tryit          <- \() {devtools::load_all()}
   build_docs     <- \() {devtools::document()}
