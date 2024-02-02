@@ -4,15 +4,11 @@
 \alias{read_from_gd}
 \title{Read from Google Drive a JSON file inside rstudio folder}
 \usage{
-read_from_gd(what, auth = FALSE, progBar = NULL)
+read_from_gd(what, progBar = NULL)
 }
 \arguments{
 \item{what}{One of c("rstudio_bindings", "editor_bindings", "addins"),
 the file to read}
-
-\item{auth}{boolean, if TRUE will authenticate with Google Drive, if FALSE will
-use the already authenticated. Default is FALSE, because [sync()]
-will authenticate.}
 
 \item{progBar}{function, designed to work with [progress_bar()]. Runs after
 each file is pushed.}
@@ -33,5 +29,6 @@ This is a helper function for [pull()] and [sync()] that:
 }
 }
 \seealso{
-[read_from_local()], [sync()], [jsonlite::fromJSON()], [googledrive::drive_read_string()]
+[read_from_local()] [sync()]
+[jsonlite::fromJSON()] [googledrive::drive_read_string()]
 }

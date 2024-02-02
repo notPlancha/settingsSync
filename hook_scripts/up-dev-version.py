@@ -49,7 +49,7 @@ lines[version_line] = ic(f"Version: {version}\n")
 with open(desc, 'w') as f:
   f.writelines(lines)
 if "--dry-run" in sys.argv:
-  sys.exit(2)
+  sys.exit(0)
 subprocess.run(["git", "add", "DESCRIPTION"])
 subprocess.run(["git", "commit", "-m", f"Version {version}"])
 click.echo(f"Version {version} committed")

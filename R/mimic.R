@@ -95,7 +95,7 @@ gd_wrapper <- list(
     } else {
       googledrive::drive_get(path, ...)
     }
-  }
+  },
   read = \(path, encoding, ...) {
     if (is_mimic_on()) {
       read_file(file.path(mimic_path_gd(), path))

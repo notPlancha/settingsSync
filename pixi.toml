@@ -7,8 +7,8 @@ platforms = ["win-64"]
 [tasks]
 hook-install = "pre-commit install --hook-type pre-push"
 radian = "radian"
-up-dev = "python hook_scripts/up-dev-version.py --dry-run"
-hook-test = "pre-commit run --all-files"
+up-dev = "python hook_scripts/up-dev-version.py"
+hook-test = "pre-commit run"
 
 [dependencies]
 pre-commit = ">=3.6.0,<3.7"

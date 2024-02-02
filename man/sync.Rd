@@ -4,13 +4,9 @@
 \alias{sync}
 \title{Sync Rstudio Settings}
 \usage{
-sync(auth = TRUE, write = TRUE)
+sync(write = TRUE)
 }
 \arguments{
-\item{auth}{boolean, if TRUE will authenticate with Google Drive, if FALSE will
-use the already authenticated. Default is TRUE, which difers from [push()] and
-[pull()].}
-
 \item{write}{boolean, if TRUE will write the merged settings to the local files,
 and push them to Google Drive. FALSE essentially just makes conflict resolution,
 without changing any files (basically a dry run). Default is TRUE.}
@@ -24,7 +20,6 @@ write the merged settings to the local files, and push them to Google Drive.
 \dontrun{
   sync()             # will sync all settings, is what's run when called by addin
   sync(write= FALSE) # dry run, will not write to files or push to gd
-  sync(auth= FALSE)  # will not authenticate with gd, will use already authenticated
 }
 }
 \seealso{

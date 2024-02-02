@@ -4,18 +4,9 @@
 \alias{pull}
 \title{Pull Rstudio Settings}
 \usage{
-pull(
-  auth = FALSE,
-  addins_gd = NULL,
-  editor_bindings_gd = NULL,
-  rstudio_bindings_gd = NULL
-)
+pull(addins_gd = NULL, editor_bindings_gd = NULL, rstudio_bindings_gd = NULL)
 }
 \arguments{
-\item{auth}{boolean, if TRUE will authenticate with Google Drive, if FALSE will
-use the already authenticated. Default is FALSE, because [sync()]
-will authenticate.}
-
 \item{addins_gd, editor_bindings_gd, rstudio_bindings_gd}{character, the json
 string to be written to the respective file; if NULL, will read from
 Google Drive. Can also be FALSE to not write that specific file.}
@@ -28,7 +19,6 @@ this fucntion will not do any checking, and will just override.
 \examples{
 \dontrun{
  pull()         # will pull all settings from gd, overwriting them
- pull(auth= TRUE) # will authenticate and pull all settings
  pull(
   addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
   editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE

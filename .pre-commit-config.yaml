@@ -1,6 +1,7 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 # R specific hooks: https://github.com/lorenzwalthert/precommit
+fail_fast: true
 repos:
 -   repo: local
     hooks:
@@ -12,7 +13,7 @@ repos:
     - id: up-dev-version
       name: up-dev-version
       description: Bumps the dev version in DESCRIPTION
-      entry: python hook_scripts/up-dev-version.py
+      entry: pixi run up-dev # inside pixi because that's where pre-commit is
       language: system
 
 # TODO check extrachecks

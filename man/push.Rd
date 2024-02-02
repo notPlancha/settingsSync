@@ -5,7 +5,6 @@
 \title{Push Rstudio Settings}
 \usage{
 push(
-  auth = FALSE,
   do_addins = TRUE,
   do_editor_bindings = TRUE,
   do_rstudio_bindings = TRUE,
@@ -13,10 +12,6 @@ push(
 )
 }
 \arguments{
-\item{auth}{boolean, if TRUE will authenticate with Google Drive, if FALSE will
-use the already authenticated. Default is FALSE, because [sync()]
-will authenticate.}
-
 \item{do_addins, do_editor_bindings, do_rstudio_bindings}{booleans, if TRUE will
 push the respective file. Default is TRUE.}
 
@@ -31,9 +26,10 @@ Because of the way [googledrive::drive_put] is built, this function reads from
 the files directly.
 }
 \examples{
-\dontrun{
-  push()              # will push all settings to gd, overwriting them
-  push(do_addins= FALSE) # will push only editor and rstudio bindings
-  push(auth= TRUE)      # will authenticate and push all settings
-}
+mimic_on()
+
+push()                  # will push all settings to gd, overwriting them
+push(do_addins = FALSE) # will push only editor and rstudio bindings
+
+mimic_off()
 }
