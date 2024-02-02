@@ -3,6 +3,7 @@ from expression.collections import seq
 from icecream import ic
 import sys
 from warnings import warn
+import subprocess
 # ic.disable()
 version = None
 with open('DESCRIPTION', 'r') as f:
@@ -34,3 +35,6 @@ lines[version_line] = ic(f"Version: {version}\n")
 
 with open('DESCRIPTION', 'w') as f:
   f.writelines(lines)
+
+subprocess.run(["git", "add", "DESCRIPTION"])
+subprocess.run(["git", "commit", "-m", f"Version {version}"])
