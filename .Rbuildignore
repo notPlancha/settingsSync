@@ -13,3 +13,4 @@
 ^revdep$
 ^CRAN-SUBMISSION$
 ^\.pre-commit-config\.yaml$
+^hook_scripts$

@@ -6,6 +6,11 @@ platforms = ["win-64"]
 
 [tasks]
 hook-install = "pre-commit install --hook-type pre-push"
+radian = "radian"
+up-dev = "python hook_scripts/up-dev-version.py"
 
 [dependencies]
 pre-commit = ">=3.6.0,<3.7"
+radian = ">=0.6.11,<0.7"
+expression = ">=5.0.2,<5.1"
+icecream = ">=2.1.3,<2.2"
