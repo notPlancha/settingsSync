@@ -9,15 +9,15 @@ from pyprojroot.here import here        # to get the root of the project
 
 desc = here("DESCRIPTION")
 if not ("--debug" in sys.argv or "-d" in sys.argv): ic.disable()
-
 # input just to make sure
+"""
 try:
   result = click.confirm("Do you want to up the dev version?", default=True)
   if not result:
     sys.exit(0)
 except click.Abort:
   sys.exit(1)
-
+"""
 version = None
 with open(desc, 'r') as f:
   lines = f.readlines() # to later write back to file
@@ -48,6 +48,8 @@ lines[version_line] = ic(f"Version: {version}\n")
 
 with open(desc, 'w') as f:
   f.writelines(lines)
+if "--dry-run" in sys.argv:
+  sys.exit(2)
 subprocess.run(["git", "add", "DESCRIPTION"])
 subprocess.run(["git", "commit", "-m", f"Version {version}"])
 click.echo(f"Version {version} committed")

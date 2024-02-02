@@ -4,9 +4,16 @@
 repos:
 -   repo: local
     hooks:
+    - id: roxygenize
+      name: roxygenize
+      description: Roxygenize R code
+      entry: Rscript -e 'devtools::document()'
+      language: system
     - id: up-dev-version
       name: up-dev-version
       description: Bumps the dev version in DESCRIPTION
-      entry: pixi run up-dev
+      entry: python hook_scripts/up-dev-version.py
+      language: system
+
 # TODO check extrachecks
 # TODO check the email

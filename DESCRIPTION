@@ -1,7 +1,7 @@
 Type: Package
 Package: settingsSync
 Title: Rstudio Addin to Sync Settings and Keymaps
-Version: 1.0.1-1
+Version: 2.0.0-0
 Authors@R: 
     person(, "notPlancha", , "Andre_Plancha@iscte-iul.pt", role = c("aut", "cre"))
 Author: notPlancha [aut, cre]
@@ -19,7 +19,8 @@ Imports:
     glue,
     googledrive,
     jsonlite,
-    rappdirs
+    rappdirs,
+    tibble
 Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.3.1
