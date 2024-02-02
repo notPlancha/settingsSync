@@ -1,5 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+# R specific hooks: https://github.com/lorenzwalthert/precommit
 repos:
 -   repo: local
     hooks:
@@ -7,9 +8,5 @@ repos:
       name: up-dev-version
       description: Bumps the dev version in DESCRIPTION
       entry: pixi run up-dev
-# TODO add roxygenyze https://lorenzwalthert.github.io/precommit/articles/available-hooks.html
-# TODO add one that bumps dev version (manually write)
-# TODO check what each of these does
-# TODO add pre-commit to README
 # TODO check extrachecks
 # TODO check the email

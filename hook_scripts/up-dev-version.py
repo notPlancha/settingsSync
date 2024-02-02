@@ -1,12 +1,25 @@
-from expression import pipe
+from expression import pipe             # functional programming
 from expression.collections import seq
-from icecream import ic
+from icecream import ic                 # debugging
 import sys
 from warnings import warn
-import subprocess
-# ic.disable()
+import subprocess                       # to run git commands
+import click                            # to get user input
+from pyprojroot.here import here        # to get the root of the project
+
+desc = here("DESCRIPTION")
+if not ("--debug" in sys.argv or "-d" in sys.argv): ic.disable()
+
+# input just to make sure
+try:
+  result = click.confirm("Do you want to up the dev version?", default=True)
+  if not result:
+    sys.exit(0)
+except click.Abort:
+  sys.exit(1)
+
 version = None
-with open('DESCRIPTION', 'r') as f:
+with open(desc, 'r') as f:
   lines = f.readlines() # to later write back to file
   for line_number, line in enumerate(lines):
     if 'Version:' in line:
@@ -22,7 +35,7 @@ except ValueError:
   warn("Version not found in DESCRIPTION file, assuming release version")
   sys.exit(0)
 ic(not_dev, dev)
-print("Upping dev version before pushing")
+
 version = pipe(
   dev,
   int,
@@ -33,8 +46,8 @@ version = pipe(
 ic(version)
 lines[version_line] = ic(f"Version: {version}\n")
 
-with open('DESCRIPTION', 'w') as f:
+with open(desc, 'w') as f:
   f.writelines(lines)
-
 subprocess.run(["git", "add", "DESCRIPTION"])
 subprocess.run(["git", "commit", "-m", f"Version {version}"])
+click.echo(f"Version {version} committed")
