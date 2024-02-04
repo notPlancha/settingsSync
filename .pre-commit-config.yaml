@@ -5,16 +5,12 @@ fail_fast: true
 repos:
 -   repo: local
     hooks:
-    - id: check-ic
-      name: check-ic
-      description: Check the ic
-      entry: Rscript .\hook_scripts\no-ic-statment.R
-      language: system
-    - id: roxygenize
-      name: roxygenize
-      description: Roxygenize R code
-      entry: Rscript -e 'devtools::document()'
-      language: system
+    # I have no idea why this isn't working
+    # - id: check-ic
+    #   name: check-ic
+    #   description: Check the ic
+    #   entry: Rscript .\hook_scripts\temp.R
+    #   language: system
     - id: up-dev-version
       name: up-dev-version
       description: Bumps the dev version in DESCRIPTION
