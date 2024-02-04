@@ -57,8 +57,15 @@ get_mimic_folder_local <- function() {
 # https://github.com/hadley/r-pkgs/issues/828
 #'@noRd
 ignore_unused_import_for_gd <- function() {
-  requireNamespace("googledrive")
-  requireNamespace("tibble")
+  googledrive::drive_auth
+  googledrive::drive_mkdir
+  googledrive::drive_put
+  googledrive::local_drive_quiet
+  googledrive::drive_get
+  googledrive::drive_read_string
+  googledrive::as_id
+  tibble::is_tibble
+  tibble::tibble
 }
 
 #'@noRd
