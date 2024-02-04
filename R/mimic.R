@@ -18,51 +18,51 @@
 #' mimic_off()
 NULL
 
-#' @describeIn dry-run-on-off Enable dry run
-#' @param local,cloud character, the json that will be used.
-#' If NULL, it defaults to a conflicted json. Defaults to such.
+#' @describeIn dry-run-on-off Enable dry run and write mimic files
 #' @export
-mimic_on <- function(local = NULL, cloud = NULL) {
+mimic_on <- function() {
   options("ss.mimic" = TRUE)
-  if (is.null(local)) {
-    local <- '{"insertPipeOperator": "Shift+Tab"}'
-  }
-  if (is.null(cloud)) {
-    cloud <- '{"insertPipeOperator": "Ctrl+Shift+M"}'
-  }
-  options("ss.mimic.local" = local)
-  options("ss.mimic.cloud" = cloud)
+  # write to mimiqued local and cloud
+  write_file(
+    '{"insertPipeOperator": "Shift+Tab"}',
+    file.path(get_mimic_folder_gd(), "rstudio", "rstudio_bindings.json")
+  )
+  write_file(
+    '{"insertPipeOperator": "Ctrl+Tab"}',
+    file.path(get_mimic_folder_local(), "keybindings","rstudio_bindings.json")
+  )
 }
 #' @describeIn dry-run-on-off Disable dry run
 #' @export
 mimic_off <- function() {
   options("ss.mimic" = FALSE)
-  options("ss.mimic.local" = NULL)
-  options("ss.mimic.cloud" = NULL)
 }
 
 #' @describeIn dry-run-on-off Check if dry run is on
 #' @export
-is_mimic_on <- \(x) {
-  x |> getOption("ss.mimic") |> as.logical()
+is_mimic_on <- \() {
+  getOption("ss.mimic") |> as.logical()
 }
 
-mimic_path_gd <- function() {
-  file.path(tempdir(), "gd_mimic")
+get_mimic_folder_gd <- function() {
+  file.path(tempdir(), "mimic_gd")
+}
+get_mimic_folder_local <- function() {
+  file.path(tempdir(), "mimic_local")
 }
 
-gd_wrapper <- list(
+gd <- list(
   # auth = \(...) {if (is_mimic_on()) return() else googledrive::drive_auth(...)},
   mkdir = \(name, ...) {
     if (is_mimic_on()) {
-      dir.create(file.path(mimic_path_gd(), name))
+      dir.create(file.path(get_mimic_folder_gd(), name), recursive = TRUE)
     } else {
       googledrive::drive_mkdir(name, ...)
     }
   },
   put = \(media, path = NULL, ...) {
     if (is_mimic_on()) {
-      cat(media, file = file.path(mimic_path_gd(), path))
+      write_file(media, file.path(get_mimic_folder_gd(), path))
     } else {
       googledrive::drive_put(media, path, ...)
     }
@@ -76,34 +76,41 @@ gd_wrapper <- list(
   },
   get = \(file, ...) {
     if (is_mimic_on()) {
-      local_path <- file.path(mimic_path_gd(), file)
+      local_path <- file.path(get_mimic_folder_gd(), file)
       if (file.exists(local_path)) {
-        tibble(
-          name = basename(path),
-          path = file,
-          mimic_ = local_path
+        tibble::tibble(
+          name = basename(local_path),
+          path = file
           # id = googledrive::as_id(file),
           # drive_resource = list()
         )
       } else {
-        tibble(
+        tibble::tibble(
           name = character(),
-          path = character(),
-          mimic_ = character()
+          path = character()
         )
       }
     } else {
-      googledrive::drive_get(path, ...)
+      googledrive::drive_get(file, ...)
     }
   },
-  read = \(path, encoding, ...) {
+  read = \(file, encoding = "UTF-8", ...) {
+    # file can be a path or a tibble (or a dribble)
     if (is_mimic_on()) {
-      read_file(file.path(mimic_path_gd(), path))
+      if (tibble::is_tibble(file)) {
+        path <- file.path(get_mimic_folder_gd(), file$path)
+      }
+      return(read_file(path))
     } else {
-      googledrive::drive_read_string(path, ...)
+      googledrive::drive_read_string(file, ...)
     }
   }
 )
 
-
+mimic_read_files <- function() {
+  path <- file.path(get_mimic_folder_local(), "keybindings", "rstudio_bindings.json") |> normalizePath("/")
+  print(paste(path, ":",path |> read_file()))
+  path <- file.path(get_mimic_folder_gd(), "rstudio", "rstudio_bindings.json") |> normalizePath("/")
+  print(paste(path, ":",path |> read_file()))
+}
 

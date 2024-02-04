@@ -5,6 +5,11 @@ fail_fast: true
 repos:
 -   repo: local
     hooks:
+    - id: check-ic
+      name: check-ic
+      description: Check the ic
+      entry: Rscript .\hook_scripts\no-ic-statment.R
+      language: system
     - id: roxygenize
       name: roxygenize
       description: Roxygenize R code

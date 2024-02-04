@@ -24,11 +24,21 @@ is_windows <- function() {
 #' @seealso [rappdirs::user_config_dir()], [is_windows()], [usethis::is_windows()]
 rstudio_path <- function() {
   if (is_mimic_on()) {
-    return(tempdir())
+    get_mimic_folder_local()
+  } else {
+    rappdirs::user_config_dir() |> file.path(ifelse(is_windows(), "Rstudio", "rstudio"))
   }
-  rappdirs::user_config_dir() |> file.path(ifelse(is_windows(), "Rstudio", "rstudio"))
 }
 
 read_file <- function(path) {
-  readLines(path, warn = FALSE) |> paste(collapse = "\n")
+  if (file.exists(path)) {
+    readLines(path, warn = FALSE) |> paste(collapse = "\n")
+  } else {
+    character()
+  }
+}
+
+write_file <- function(x, path) {
+  dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
+  cat(x, file = path)
 }

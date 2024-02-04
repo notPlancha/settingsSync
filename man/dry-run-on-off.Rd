@@ -7,15 +7,11 @@
 \alias{is_mimic_on}
 \title{Simulate the functions before truly running them}
 \usage{
-mimic_on(local = NULL, cloud = NULL)
+mimic_on()
 
 mimic_off()
 
-is_mimic_on(x)
-}
-\arguments{
-\item{local, cloud}{character, the json that will be used.
-If NULL, it defaults to a conflicted json. Defaults to such.}
+is_mimic_on()
 }
 \description{
 These functions are used to simulate the main functions before truly running
@@ -28,7 +24,7 @@ when running [utils::example()]. Internally, these change the options
 }
 \section{Functions}{
 \itemize{
-\item \code{mimic_on()}: Enable dry run
+\item \code{mimic_on()}: Enable dry run and write mimic files
 
 \item \code{mimic_off()}: Disable dry run
 

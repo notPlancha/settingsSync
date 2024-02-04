@@ -20,7 +20,7 @@
 #' push(do_addins = FALSE) # will push only editor and rstudio bindings
 #'
 #' mimic_off()
-push <- function( do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
+push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
   if(progBar |> is.null()) progBar <- \() {invisible()}
   rstudio_path() -> path
 
@@ -28,7 +28,9 @@ push <- function( do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings
   editor_bindings   <- file.path(path, "keybindings", "editor_bindings.json")
   rstudio_bindings  <- file.path(path, "keybindings", "rstudio_bindings.json")
 
-  tryCatch(gd_wrapper$mkdir("rstudio"), error = \(x) cli::cli_alert_warning("Folder already exists on GoogleDrive, will substitute"))
+  message <- \(x) cli::cli_alert_warning("Folder already exists on GoogleDrive, will substitute")
+
+  tryCatch(gd$mkdir("rstudio"), error = message, warning = message)
   if(do_addins)            gd$put(path = "rstudio/addins.json", media = addins)
   progBar()
   if(do_editor_bindings)   gd$put(path = "rstudio/editor_bindings.json", media = editor_bindings)
@@ -71,17 +73,35 @@ pull <- function(
   editor_bindings   <- file.path(path, "keybindings", "editor_bindings.json")
   rstudio_bindings  <- file.path(path, "keybindings", "rstudio_bindings.json")
   if (is.null(addins_gd)){
+    # This unjsons it, and then jsons it again, no point in optimizing though
+    # at least it grants it's valid json
     addins_gd <- read_from_gd("addins")
+    if(nrow(addins_gd) == 0) {
+      addins_gd <- "{}"
+    } else {
+      addins_gd <- addins_gd |> jsonlite::unbox() |> jsonlite::toJSON(pretty= TRUE)
+    }
   }
   if (is.null(editor_bindings_gd)){
     editor_bindings_gd <- read_from_gd("editor_bindings")
+    if(nrow(editor_bindings_gd) == 0) {
+      editor_bindings_gd <- "{}"
+    } else {
+      editor_bindings_gd <- editor_bindings_gd |> jsonlite::unbox() |> jsonlite::toJSON(pretty= TRUE)
+    }
   }
   if (is.null(rstudio_bindings_gd)){
-    rstudio_bindings_gd <-read_from_gd("rstudio_bindings")
+    rstudio_bindings_gd <- read_from_gd("rstudio_bindings")
+    if(nrow(rstudio_bindings_gd) == 0) {
+      rstudio_bindings_gd <- "{}"
+    } else {
+      rstudio_bindings_gd <- rstudio_bindings_gd |> jsonlite::unbox() |> jsonlite::toJSON(pretty= TRUE)
+    }
   }
-  if(!isFALSE(addins_gd))           cat(addins_gd, file= addins)
-  if(!isFALSE(editor_bindings_gd))  cat(editor_bindings_gd, file=editor_bindings)
-  if(!isFALSE(rstudio_bindings_gd)) cat(rstudio_bindings_gd, file=rstudio_bindings)
+
+  if(!isFALSE(addins_gd))           write_file(addins_gd, addins)
+  if(!isFALSE(editor_bindings_gd))  write_file(editor_bindings_gd, editor_bindings)
+  if(!isFALSE(rstudio_bindings_gd)) write_file(rstudio_bindings_gd, rstudio_bindings)
 }
 
 # TODO make prog bar optional?
@@ -166,7 +186,6 @@ sync <- function(write= TRUE) {
   }
 }
 
-
 #' Read from Google Drive a JSON file inside rstudio folder
 #'
 #' This is a helper function for [pull()] and [sync()] that:
@@ -189,17 +208,18 @@ sync <- function(write= TRUE) {
 #' @seealso [read_from_local()] [sync()]
 #' [jsonlite::fromJSON()] [googledrive::drive_read_string()]
 read_from_gd <- function(what, progBar = NULL) {
-  gd_wrapper$quiet()
+  gd$quiet()
   file <- paste0("rstudio/", what,".json") |>
-    gd_wrapper$get()
+    gd$get()
   if (nrow(file) == 0) {return(data.frame())}
   file |>
-    gd_wrapper$read(encoding = "UTF-8") |>
+    gd$read(encoding = "UTF-8") |>
     jsonlite::fromJSON() |>
     as.data.frame() -> ret
   if (progBar |> is.null() |> isFALSE()) progBar()
   ret
 }
+
 
 #' Read from local a JSON file inside rstudio folder
 #'

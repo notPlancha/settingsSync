@@ -17,7 +17,7 @@ pak::pak("notPlancha/settingsSync")
 You can directly call `settingsSync::sync()`, or use the Rstudio Addin (they do the same thing); and follow the instructions. The extension pulls the settings from Google Drive (if any), tries to merge them with the local settings (the package has conflict resolution), and then pushes the merged settings to Google Drive.
 
 ## Contributing
-I'm using (pixi)[https://github.com/prefix-dev/pixi] to ease development, and (pre-commit)[https://pre-commit.com/]. So after cloning:
+I'm using [pixi](https://github.com/prefix-dev/pixi) to ease development, and [pre-commit](https://pre-commit.com/). So after cloning:
 
 ```bash
 # scoop install pixi
@@ -27,6 +27,6 @@ pixi run hook-install
 should do the trick. After that open the project in Rstudio.
 
 > [!NOTE]  
-> I didn't add R to pixi because (Windows versions are not updated)[https://github.com/conda-forge/r-base-feedstock/issues/248] and they don't work well  with rstudio (and [rstudio in conda is also not updated as of writing](https://github.com/conda-forge/rstudio-feedstock/issues/29)).
+> I didn't add R to pixi because [Windows versions are not updated][https://github.com/conda-forge/r-base-feedstock/issues/248] and they don't work well  with rstudio (and [rstudio in conda is also not updated as of writing](https://github.com/conda-forge/rstudio-feedstock/issues/29)).
 
 Feel free to open an issue or a PR.
