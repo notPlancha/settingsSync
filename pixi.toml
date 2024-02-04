@@ -9,6 +9,7 @@ hook-install = "pre-commit install --hook-type pre-push"
 radian = "radian"
 up-dev = "python hook_scripts/up-dev-version.py"
 hook-test = "pre-commit run"
+push-no-hook = "git push --no-verify"
 
 [dependencies]
 pre-commit = ">=3.6.0,<3.7"

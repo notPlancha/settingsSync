@@ -15,3 +15,5 @@
 ^\.pre-commit-config\.yaml$
 ^hook_scripts$
 ^\.pixi$
+^pixi\.lock$
+^pixi\.toml$

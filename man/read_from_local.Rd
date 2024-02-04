@@ -16,11 +16,11 @@ This is a helper function for [sync()] that:
 * converts it to a data frame (to resolve conflicts in the future)
 }
 \examples{
-\dontrun{
+mimic_on()
   read_from_local("rstudio_bindings")
   read_from_local("editor_bindings")
   read_from_local("addins")
-}
+mimic_off()
 }
 \seealso{
 [read_from_gd()], [push()], [sync()], [jsonlite::read_json()]

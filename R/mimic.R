@@ -9,16 +9,16 @@
 #' "ss.mimic", "ss.mimic.local" and "ss.mimic.cloud".
 #'
 #'
-#' @name dry-run-on-off
+#' @name mimic-on-off
 #' @examples
-#' mimic_on(local = "{}", cloud = "{}")
+#' mimic_on()
 #' if(interactive()) {
 #'   sync()
 #' }
 #' mimic_off()
 NULL
 
-#' @describeIn dry-run-on-off Enable dry run and write mimic files
+#' @describeIn mimic-on-off Enable mimic and write mimic files
 #' @export
 mimic_on <- function() {
   options("ss.mimic" = TRUE)
@@ -32,25 +32,36 @@ mimic_on <- function() {
     file.path(get_mimic_folder_local(), "keybindings","rstudio_bindings.json")
   )
 }
-#' @describeIn dry-run-on-off Disable dry run
+#' @describeIn mimic-on-off Disable mimic
 #' @export
 mimic_off <- function() {
   options("ss.mimic" = FALSE)
 }
 
-#' @describeIn dry-run-on-off Check if dry run is on
+#' @describeIn mimic-on-off Check if mimic is on
 #' @export
 is_mimic_on <- \() {
   getOption("ss.mimic") |> as.logical()
 }
 
+
+#'@noRd
 get_mimic_folder_gd <- function() {
   file.path(tempdir(), "mimic_gd")
 }
+#'@noRd
 get_mimic_folder_local <- function() {
   file.path(tempdir(), "mimic_local")
 }
 
+# https://github.com/hadley/r-pkgs/issues/828
+#'@noRd
+ignore_unused_import_for_gd <- function() {
+  requireNamespace("googledrive")
+  requireNamespace("tibble")
+}
+
+#'@noRd
 gd <- list(
   # auth = \(...) {if (is_mimic_on()) return() else googledrive::drive_auth(...)},
   mkdir = \(name, ...) {
@@ -60,11 +71,12 @@ gd <- list(
       googledrive::drive_mkdir(name, ...)
     }
   },
-  put = \(media, path = NULL, ...) {
+  put = \(file, path = NULL, ...) {
+    # put puts the file directly, without reading it (differs from read)
     if (is_mimic_on()) {
-      write_file(media, file.path(get_mimic_folder_gd(), path))
+      write_file(file |> read_file(), file.path(get_mimic_folder_gd(), path))
     } else {
-      googledrive::drive_put(media, path, ...)
+      googledrive::drive_put(file, path, ...)
     }
   },
   quiet = \(...) {
@@ -75,6 +87,7 @@ gd <- list(
     }
   },
   get = \(file, ...) {
+    # get gets the metadata of the file
     if (is_mimic_on()) {
       local_path <- file.path(get_mimic_folder_gd(), file)
       if (file.exists(local_path)) {
@@ -95,18 +108,20 @@ gd <- list(
     }
   },
   read = \(file, encoding = "UTF-8", ...) {
-    # file can be a path or a tibble (or a dribble)
+    # read reads the file as a string
+    # file can be a path or a tibble (or a dribble) (metadata)
     if (is_mimic_on()) {
       if (tibble::is_tibble(file)) {
-        path <- file.path(get_mimic_folder_gd(), file$path)
+        file <- file.path(get_mimic_folder_gd(), file$path)
       }
-      return(read_file(path))
+      return(read_file(file))
     } else {
       googledrive::drive_read_string(file, ...)
     }
   }
 )
 
+#'@noRd
 mimic_read_files <- function() {
   path <- file.path(get_mimic_folder_local(), "keybindings", "rstudio_bindings.json") |> normalizePath("/")
   print(paste(path, ":",path |> read_file()))

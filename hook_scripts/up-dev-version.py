@@ -6,7 +6,8 @@ from warnings import warn
 import subprocess                       # to run git commands
 import click                            # to get user input
 from pyprojroot.here import here        # to get the root of the project
-
+# TODO make it not change if R didn't change from origin/main 
+# Or if last commit was a version change
 desc = here("DESCRIPTION")
 if not ("--debug" in sys.argv or "-d" in sys.argv): ic.disable()
 # input just to make sure

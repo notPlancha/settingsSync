@@ -11,7 +11,7 @@ read_from_gd(what, progBar = NULL)
 the file to read}
 
 \item{progBar}{function, designed to work with [progress_bar()]. Runs after
-each file is pushed.}
+the file is read.}
 }
 \value{
 A data frame with the contents of the file, converted from json
@@ -22,11 +22,11 @@ This is a helper function for [pull()] and [sync()] that:
 * converts it to a data frame (to resolve conflicts in the future)
 }
 \examples{
-\dontrun{
- read_from_gd("rstudio_bindings")
- read_from_gd("editor_bindings")
- read_from_gd("addins")
-}
+mimic_on()
+  read_from_gd("rstudio_bindings")
+  read_from_gd("editor_bindings")
+  read_from_gd("addins")
+mimic_off()
 }
 \seealso{
 [read_from_local()] [sync()]

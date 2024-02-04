@@ -2,6 +2,7 @@
 none <- \(x) x |> all() |> isFALSE()
 
 # readr::empty_file, modified
+#'@noRd
 empty_json_file <- function(x) {
   is.character(x) && file.exists(x) && file.info(x, extra_cols = FALSE)$size <= 2
 }
@@ -30,6 +31,7 @@ rstudio_path <- function() {
   }
 }
 
+#'@noRd
 read_file <- function(path) {
   if (file.exists(path)) {
     readLines(path, warn = FALSE) |> paste(collapse = "\n")
@@ -38,6 +40,7 @@ read_file <- function(path) {
   }
 }
 
+#'@noRd
 write_file <- function(x, path) {
   dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
   cat(x, file = path)

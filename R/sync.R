@@ -15,10 +15,8 @@
 #'
 #' @examples
 #' mimic_on()
-#'
-#' push()                  # will push all settings to gd, overwriting them
-#' push(do_addins = FALSE) # will push only editor and rstudio bindings
-#'
+#'   push()                  # will push all settings to gd, overwriting them
+#'   push(do_addins = FALSE) # will push only editor and rstudio bindings
 #' mimic_off()
 push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
   if(progBar |> is.null()) progBar <- \() {invisible()}
@@ -31,11 +29,11 @@ push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings=
   message <- \(x) cli::cli_alert_warning("Folder already exists on GoogleDrive, will substitute")
 
   tryCatch(gd$mkdir("rstudio"), error = message, warning = message)
-  if(do_addins)            gd$put(path = "rstudio/addins.json", media = addins)
+  if(do_addins)            gd$put(path = "rstudio/addins.json", file = addins)
   progBar()
-  if(do_editor_bindings)   gd$put(path = "rstudio/editor_bindings.json", media = editor_bindings)
+  if(do_editor_bindings)   gd$put(path = "rstudio/editor_bindings.json", file = editor_bindings)
   progBar()
-  if(do_rstudio_bindings)  gd$put(path = "rstudio/rstudio_bindings.json", media = rstudio_bindings)
+  if(do_rstudio_bindings)  gd$put(path = "rstudio/rstudio_bindings.json", file = rstudio_bindings)
   progBar()
 }
 
@@ -45,7 +43,6 @@ push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings=
 #' helper function for [sync()], the main function, but can be used alone, although
 #' this fucntion will not do any checking, and will just override.
 #'
-#' @inheritParams push
 #' @param addins_gd,editor_bindings_gd,rstudio_bindings_gd character, the json
 #' string to be written to the respective file; if NULL, will read from
 #' Google Drive. Can also be FALSE to not write that specific file.
@@ -53,16 +50,16 @@ push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings=
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'  pull()         # will pull all settings from gd, overwriting them
-#'  pull(
-#'   addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
-#'   editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE
-#'  )
-#'  # will write to addins.json the string
-#'  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
-#'  # will write to addins.json the stringand pull the other 2 files from gd
-#' }
+#' mimic_on()
+#'   pull()         # will pull all settings from gd, overwriting them
+#'   pull(
+#'    addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
+#'    editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE
+#'   )
+#'   # will write to addins.json the string
+#'   pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
+#'   # will write to addins.json the stringand pull the other 2 files from gd
+#' mimic_off()
 #' @seealso [read_from_gd()], [sync()], [push()]
 pull <- function(
     addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
@@ -104,7 +101,6 @@ pull <- function(
   if(!isFALSE(rstudio_bindings_gd)) write_file(rstudio_bindings_gd, rstudio_bindings)
 }
 
-# TODO make prog bar optional?
 #' Sync Rstudio Settings
 #'
 #' Gets the settings from Google Drive and from the local files, and merges them.
@@ -114,16 +110,19 @@ pull <- function(
 #' @param write boolean, if TRUE will write the merged settings to the local files,
 #' and push them to Google Drive. FALSE essentially just makes conflict resolution,
 #' without changing any files (basically a dry run). Default is TRUE.
+#' @param useProgBar boolean, if TRUE will show a progress bar. Default is TRUE.
 #' @export
 #'
 #' @seealso [push()], [pull()]
 #' @examples
-#' \dontrun{
-#'   sync()             # will sync all settings, is what's run when called by addin
+#' mimic_on()
+#' if(interactive()) {
 #'   sync(write= FALSE) # dry run, will not write to files or push to gd
+#'   sync()             # will sync all settings, is what's run when called by addin
 #' }
-sync <- function(write= TRUE) {
-  progBar <- progress_bar(6)
+#' mimic_off()
+sync <- function(write= TRUE, useProgBar = TRUE) {
+  progBar <- ifelse(useProgBar, progress_bar(6), NULL)
   # pull, merge and push
   addins_gd           <- read_from_gd("addins", progBar = progBar)
   addins_local        <- read_from_local("addins")
@@ -194,17 +193,17 @@ sync <- function(write= TRUE) {
 #'
 #' @param what One of c("rstudio_bindings", "editor_bindings", "addins"),
 #' the file to read
-#' @inheritParams push
-#'
+#' @param progBar function, designed to work with [progress_bar()]. Runs after
+#' the file is read.
 #' @returns A data frame with the contents of the file, converted from json
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'  read_from_gd("rstudio_bindings")
-#'  read_from_gd("editor_bindings")
-#'  read_from_gd("addins")
-#' }
+#' mimic_on()
+#'   read_from_gd("rstudio_bindings")
+#'   read_from_gd("editor_bindings")
+#'   read_from_gd("addins")
+#' mimic_off()
 #' @seealso [read_from_local()] [sync()]
 #' [jsonlite::fromJSON()] [googledrive::drive_read_string()]
 read_from_gd <- function(what, progBar = NULL) {
@@ -231,23 +230,22 @@ read_from_gd <- function(what, progBar = NULL) {
 #' @seealso [read_from_gd()], [push()], [sync()], [jsonlite::read_json()]
 #'
 #' @examples
-#' \dontrun{
+#' mimic_on()
 #'   read_from_local("rstudio_bindings")
 #'   read_from_local("editor_bindings")
 #'   read_from_local("addins")
-#' }
+#' mimic_off()
 #' @export
 read_from_local <- function(what) {
   rstudio_path() |> file.path("keybindings", paste0(what,".json")) -> path
-  if (path |> empty_json_file()){
+  if (!file.exists(path) || path |> empty_json_file()){
     # return empty data frame
     data.frame()
   } else {
-    jsonlite::read_json(path) |> as.data.frame()
+    path |> jsonlite::read_json() |> as.data.frame()
   }
 }
 
-#' @noRd
 #' Interactice Conflict Resolution
 #'
 #' Used to resolve conflicts in [sync()]. Will ask the user to choose between cloud
@@ -262,6 +260,7 @@ read_from_local <- function(what) {
 #'   full_choose(data.frame(a = c(1,2), b = c(3,4)))
 #' }
 #' @seealso [sync()], [choose()]
+#' @noRd
 full_choose <- function(df) {
   if (nrow(df) <= 1) return(df)
   # if a column has NA choose the other option
@@ -297,7 +296,6 @@ full_choose <- function(df) {
   ret
 }
 
-#' @noRd
 #' Iteration of [choose()]
 #'
 #' @param keybind Conflictive keybind
@@ -310,6 +308,7 @@ full_choose <- function(df) {
 #' if(interactive()) {
 #'  choose("Ctrl+Shift+M", "Insert magrittr pipe", "Insert pipe operator")
 #' }
+#' @noRd
 choose <- function(keybind, option1, option2) {
   option1 <- ifelse(trimws(option1) == "", "[Removed assigment]", option1)
   option2 <- ifelse(trimws(option2) == "", "[Removed assigment]", option2)
@@ -325,7 +324,7 @@ choose <- function(keybind, option1, option2) {
 }
 
 
-#' @noRd
+
 #' Progress Bar Closure
 #'
 #' Each time the closure is called will update the progress bar
@@ -341,6 +340,7 @@ choose <- function(keybind, option1, option2) {
 #'   Sys.sleep(0.1)
 #'  }
 #'  pb(finish = TRUE)
+#' @noRd
 progress_bar <- \(n) {
   id <- cli::cli_progress_bar(total = n, .auto_close= FALSE)
   counter <- 0

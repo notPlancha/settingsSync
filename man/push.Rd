@@ -27,9 +27,7 @@ the files directly.
 }
 \examples{
 mimic_on()
-
-push()                  # will push all settings to gd, overwriting them
-push(do_addins = FALSE) # will push only editor and rstudio bindings
-
+  push()                  # will push all settings to gd, overwriting them
+  push(do_addins = FALSE) # will push only editor and rstudio bindings
 mimic_off()
 }
