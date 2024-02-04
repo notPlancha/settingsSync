@@ -1,7 +1,7 @@
 Type: Package
 Package: settingsSync
 Title: Rstudio Addin to Sync Settings and Keymaps
-Version: 2.0.0-3
+Version: 2.0.0-5
 Authors@R: 
     person(, "notPlancha", , "Andre_Plancha@iscte-iul.pt", role = c("aut", "cre"))
 Author: notPlancha [aut, cre]
