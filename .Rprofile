@@ -4,6 +4,7 @@ if (interactive()) {
   require(conflicted)
   require(desc)
   require(icecream)
+  require(rhub)
   options(icecream.always.include.context = T)
   options(error = function() traceback())
   # pak("r-lib/desc") # theres a bug
@@ -27,7 +28,7 @@ if (interactive()) {
   build_docs     <- \() {devtools::document()}
   local_check    <- \() {devtools::check()}
   multi_check    <- \() {
-    ch <- devtools::check_rhub()
+    ch <<- "soon"
     ch
   }
   print_cran_comments <- \(ch) {

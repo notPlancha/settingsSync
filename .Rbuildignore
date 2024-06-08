@@ -17,3 +17,4 @@
 ^\.pixi$
 ^pixi\.lock$
 ^pixi\.toml$
+^pkg\.lock$

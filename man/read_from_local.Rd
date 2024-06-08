@@ -10,6 +10,9 @@ read_from_local(what)
 \item{what}{One of c("rstudio_bindings", "editor_bindings", "addins"),
 the file to read}
 }
+\value{
+A data frame with the contents of the file, converted from json
+}
 \description{
 This is a helper function for [sync()] that:
 * reads a json file from the local rstudio folder

@@ -18,6 +18,9 @@ push the respective file. Default is TRUE.}
 \item{progBar}{function, designed to work with [progress_bar()]. Runs after
 each file is pushed.}
 }
+\value{
+nothing
+}
 \description{
 Pushes Rstudio settings to Google Drive, without pulling. This is just a
 helper function for [sync()], the main function, but can be used alone, although

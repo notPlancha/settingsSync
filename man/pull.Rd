@@ -11,6 +11,9 @@ pull(addins_gd = NULL, editor_bindings_gd = NULL, rstudio_bindings_gd = NULL)
 string to be written to the respective file; if NULL, will read from
 Google Drive. Can also be FALSE to not write that specific file.}
 }
+\value{
+nothing
+}
 \description{
 Pulls Rstudio settings from Google Drive, without pushing. This is just a
 helper function for [sync()], the main function, but can be used alone, although

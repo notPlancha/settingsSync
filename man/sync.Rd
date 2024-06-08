@@ -13,6 +13,9 @@ without changing any files (basically a dry run). Default is TRUE.}
 
 \item{useProgBar}{boolean, if TRUE will show a progress bar. Default is TRUE.}
 }
+\value{
+nothing
+}
 \description{
 Gets the settings from Google Drive and from the local files, and merges them.
 If there are conflicts, will ask the user to resolve them. Finally, will

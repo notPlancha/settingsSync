@@ -18,6 +18,7 @@
 #'   push()                  # will push all settings to gd, overwriting them
 #'   push(do_addins = FALSE) # will push only editor and rstudio bindings
 #' mimic_off()
+#' @returns nothing
 push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
   if(progBar |> is.null()) progBar <- \() {invisible()}
   rstudio_path() -> path
@@ -61,6 +62,7 @@ push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings=
 #'   # will write to addins.json the stringand pull the other 2 files from gd
 #' mimic_off()
 #' @seealso [read_from_gd()], [sync()], [push()]
+#' @returns nothing
 pull <- function(
     addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
 ) {
@@ -121,6 +123,7 @@ pull <- function(
 #'   sync()             # will sync all settings, is what's run when called by addin
 #' }
 #' mimic_off()
+#' @returns nothing
 sync <- function(write= TRUE, useProgBar = TRUE) {
   progBar <- ifelse(useProgBar, progress_bar(6), NULL)
   # pull, merge and push
@@ -236,6 +239,7 @@ read_from_gd <- function(what, progBar = NULL) {
 #'   read_from_local("addins")
 #' mimic_off()
 #' @export
+#' @returns A data frame with the contents of the file, converted from json
 read_from_local <- function(what) {
   rstudio_path() |> file.path("keybindings", paste0(what,".json")) -> path
   if (!file.exists(path) || path |> empty_json_file()){
@@ -255,13 +259,12 @@ read_from_local <- function(what) {
 #'
 #' @returns df, ready to be jsoned, without conflicts
 #'
-#' @examples
-#' if(interactive()) {
-#'   full_choose(data.frame(a = c(1,2), b = c(3,4)))
-#' }
 #' @seealso [sync()], [choose()]
 #' @noRd
 full_choose <- function(df) {
+  # if(interactive()) {
+  #   full_choose(data.frame(a = c(1,2), b = c(3,4)))
+  # }
   if (nrow(df) <= 1) return(df)
   # if a column has NA choose the other option
   # get first non NA from each column
@@ -304,12 +307,11 @@ full_choose <- function(df) {
 #'
 #' @return The chosen option
 #'
-#' @examples
-#' if(interactive()) {
-#'  choose("Ctrl+Shift+M", "Insert magrittr pipe", "Insert pipe operator")
-#' }
 #' @noRd
 choose <- function(keybind, option1, option2) {
+  # if(interactive()) {
+  #  choose("Ctrl+Shift+M", "Insert magrittr pipe", "Insert pipe operator")
+  # }
   option1 <- ifelse(trimws(option1) == "", "[Removed assigment]", option1)
   option2 <- ifelse(trimws(option2) == "", "[Removed assigment]", option2)
   utils::menu(
@@ -333,15 +335,14 @@ choose <- function(keybind, option1, option2) {
 #'
 #' @return A function/closure that when called will update the progress bar
 #'
-#' @examples
-#'  pb <- settingsSync:::progress_bar(10)
-#'  for (i in 1:10) {
-#'   pb()
-#'   Sys.sleep(0.1)
-#'  }
-#'  pb(finish = TRUE)
 #' @noRd
 progress_bar <- \(n) {
+  #  pb <- settingsSync:::progress_bar(10)
+  #  for (i in 1:10) {
+  #   pb()
+  #   Sys.sleep(0.1)
+  #  }
+  #  pb(finish = TRUE)
   id <- cli::cli_progress_bar(total = n, .auto_close= FALSE)
   counter <- 0
   \(finish= FALSE) {

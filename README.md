@@ -24,9 +24,10 @@ I'm using [pixi](https://github.com/prefix-dev/pixi) to ease development, and [p
 pixi install
 pixi run hook-install
 ```
-should do the trick. After that open the project in Rstudio.
+should do the trick. After that open the project in Rstudio. If you want to 
+install the exact packages, then run `pak::lockfile_install()`.
 
 > [!NOTE]  
-> I didn't add R to pixi because [Windows versions are not updated][https://github.com/conda-forge/r-base-feedstock/issues/248] and they don't work well  with rstudio (and [rstudio in conda is also not updated as of writing](https://github.com/conda-forge/rstudio-feedstock/issues/29)).
+> I didn't add R to pixi because [Windows versions are not updated](https://github.com/conda-forge/r-base-feedstock/issues/248) and they don't work well  with rstudio (and [rstudio in conda is also not updated as of writing](https://github.com/conda-forge/rstudio-feedstock/issues/29)).
 
 Feel free to open an issue or a PR.

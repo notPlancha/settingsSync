@@ -2,10 +2,6 @@ Type: Package
 Package: settingsSync
 Title: Rstudio Addin to Sync Settings and Keymaps
 Version: 2.0.0-6
-Authors@R: 
-    person(, "notPlancha", , "Andre_Plancha@iscte-iul.pt", role = c("aut", "cre"))
-Author: notPlancha [aut, cre]
-Maintainer: notPlancha <Andre_Plancha@iscte-iul.pt>
 Description: Rstudio Addin to sync settings, keymaps and keyboard
     shortcuts, using Google Drive.
 License: Apache License (== 2)
@@ -24,3 +20,5 @@ Imports:
 Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.3.1
+Authors@R: 
+    person("André", "Plancha", , "andre.plancha@hotmail.com", role = c("aut", "cre"))
