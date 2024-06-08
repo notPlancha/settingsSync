@@ -5,7 +5,7 @@ temp.*
 temp/
 # pixi environments
 .pixi
-
+.Rd2pdf*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

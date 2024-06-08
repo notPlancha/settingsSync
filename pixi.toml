@@ -10,6 +10,7 @@ radian = "radian"
 up-dev = "python hook_scripts/up-dev-version.py"
 hook-test = "pre-commit run"
 push-no-hook = "git push --no-verify"
+build-pdf = "R CMD Rd2pdf ./ --no-clean"
 
 [dependencies]
 pre-commit = ">=3.6.0,<3.7"

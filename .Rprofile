@@ -28,7 +28,7 @@ if (interactive()) {
   build_docs     <- \() {devtools::document()}
   local_check    <- \() {devtools::check()}
   multi_check    <- \() {
-    ch <<- "soon"
+    ch <<- rhub::rhub_check()
     ch
   }
   print_cran_comments <- \(ch) {
