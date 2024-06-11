@@ -27,7 +27,8 @@ rstudio_path <- function() {
   if (is_mimic_on()) {
     get_mimic_folder_local()
   } else {
-    rappdirs::user_config_dir() |> file.path(ifelse(is_windows(), "Rstudio", "rstudio"))
+    rappdirs::user_config_dir() |>
+      file.path(ifelse(is_windows(), "Rstudio", "rstudio"))
   }
 }
 
@@ -41,7 +42,10 @@ read_file <- function(path) {
 }
 
 #'@noRd
-write_file <- function(x, path) {
+write_file <- function(x, path = NULL) {
+  if (path |> is.null()) {
+    path <- tempfile(fileext = ".txt")
+  }
   dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
   cat(x, file = path)
 }

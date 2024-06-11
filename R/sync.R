@@ -6,8 +6,10 @@
 #' Because of the way [googledrive::drive_put] is built, this function reads from
 #' the files directly.
 #'
+#' @param do_all boolean, if TRUE will push all settings to gd, overwriting them.
+#' This param overrides the values of the other params. Default is FALSE.
 #' @param do_addins,do_editor_bindings,do_rstudio_bindings booleans, if TRUE will
-#' push the respective file. Default is TRUE.
+#' push the respective file. Default is FALSE
 #' @param progBar function, designed to work with [progress_bar()]. Runs after
 #' each file is pushed.
 #'
@@ -15,11 +17,19 @@
 #'
 #' @examples
 #' mimic_on()
-#'   push()                  # will push all settings to gd, overwriting them
-#'   push(do_addins = FALSE) # will push only editor and rstudio bindings
+#'   push()              # does nothing
+#'   push(do_all = TRUE) # will push all settings to gd, overwriting them
+#'   push(do_editor_bindings = FALSE, do_rstudio_bindings = FALSE)
+#'   # will push only editor and rstudio bindings
 #' mimic_off()
 #' @returns nothing
-push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings= TRUE, progBar = NULL) {
+push <- function(do_all = FALSE, do_addins= FALSE, do_editor_bindings= FALSE, do_rstudio_bindings= FALSE, progBar = NULL) {
+  if (do_all) {
+    do_addins <- TRUE
+    do_editor_bindings <- TRUE
+    do_rstudio_bindings <- TRUE
+  }
+
   if(progBar |> is.null()) progBar <- \() {invisible()}
   rstudio_path() -> path
 
@@ -42,36 +52,47 @@ push <- function(do_addins= TRUE, do_editor_bindings= TRUE, do_rstudio_bindings=
 #'
 #' Pulls Rstudio settings from Google Drive, without pushing. This is just a
 #' helper function for [sync()], the main function, but can be used alone, although
-#' this fucntion will not do any checking, and will just override.
+#' this function will not do any checking, and will just override.
 #'
-#' @param addins_gd,editor_bindings_gd,rstudio_bindings_gd character, the json
-#' string to be written to the respective file; if NULL, will read from
-#' Google Drive. Can also be FALSE to not write that specific file.
+#' @param all boolean, if TRUE will pull all settings from gd, overwriting them.
+#' This param overrides the values of the other params. Default is FALSE.
+#'
+#' @param addins_gd,editor_bindings_gd,rstudio_bindings_gd character or boolean,
+#' the json string to be written to the respective file or TRUE/FALSE;
+#' if TRUE, will read from Google Drive;
+#' if FALSE to not write that specific file. Default is FALSE
 #'
 #' @export
 #'
 #' @examples
 #' mimic_on()
-#'   pull()         # will pull all settings from gd, overwriting them
-#'   pull(
-#'    addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
-#'    editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE
-#'   )
+#'   pull()           # does nothing
+#'   pull(all = TRUE) # will pull all settings from gd, overwriting them
+#'   pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}',)
 #'   # will write to addins.json the string
-#'   pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
-#'   # will write to addins.json the stringand pull the other 2 files from gd
+#'   pull(
+#'     addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
+#'     editor_bindings_gd= TRUE
+#'   )
+#'   # will write to addins.json the string and pull editor_bindings from gd
 #' mimic_off()
 #' @seealso [read_from_gd()], [sync()], [push()]
 #' @returns nothing
 pull <- function(
-    addins_gd = NULL, editor_bindings_gd =NULL, rstudio_bindings_gd = NULL
+    all = FALSE,
+    addins_gd = FALSE, editor_bindings_gd =FALSE, rstudio_bindings_gd = FALSE
 ) {
+  if (all) {
+    addins_gd <- TRUE
+    editor_bindings_gd <- TRUE
+    rstudio_bindings_gd <- TRUE
+  }
   rstudio_path() -> path
 
   addins            <- file.path(path, "keybindings", "addins.json")
   editor_bindings   <- file.path(path, "keybindings", "editor_bindings.json")
   rstudio_bindings  <- file.path(path, "keybindings", "rstudio_bindings.json")
-  if (is.null(addins_gd)){
+  if (isTRUE(addins_gd)){
     # This unjsons it, and then jsons it again, no point in optimizing though
     # at least it grants it's valid json
     addins_gd <- read_from_gd("addins")
@@ -81,7 +102,7 @@ pull <- function(
       addins_gd <- addins_gd |> jsonlite::unbox() |> jsonlite::toJSON(pretty= TRUE)
     }
   }
-  if (is.null(editor_bindings_gd)){
+  if (isTRUE(editor_bindings_gd)){
     editor_bindings_gd <- read_from_gd("editor_bindings")
     if(nrow(editor_bindings_gd) == 0) {
       editor_bindings_gd <- "{}"
@@ -89,7 +110,7 @@ pull <- function(
       editor_bindings_gd <- editor_bindings_gd |> jsonlite::unbox() |> jsonlite::toJSON(pretty= TRUE)
     }
   }
-  if (is.null(rstudio_bindings_gd)){
+  if (isTRUE(rstudio_bindings_gd)){
     rstudio_bindings_gd <- read_from_gd("rstudio_bindings")
     if(nrow(rstudio_bindings_gd) == 0) {
       rstudio_bindings_gd <- "{}"
@@ -108,10 +129,15 @@ pull <- function(
 #' Gets the settings from Google Drive and from the local files, and merges them.
 #' If there are conflicts, will ask the user to resolve them. Finally, will
 #' write the merged settings to the local files, and push them to Google Drive.
+#' Will first ask for confirmation if interactive. This function is what's called
+#' by the addin.
+#'
+#' NOTE: if it's not interactive, it won't write to files because of CRAN policies.
 #'
 #' @param write boolean, if TRUE will write the merged settings to the local files,
 #' and push them to Google Drive. FALSE essentially just makes conflict resolution,
-#' without changing any files (basically a dry run). Default is TRUE.
+#' without changing any files (basically a dry run). If a value orther than NULL
+#' is provided, this will skip confirmation.
 #' @param useProgBar boolean, if TRUE will show a progress bar. Default is TRUE.
 #' @export
 #'
@@ -119,12 +145,27 @@ pull <- function(
 #' @examples
 #' mimic_on()
 #' if(interactive()) {
-#'   sync(write= FALSE) # dry run, will not write to files or push to gd
-#'   sync()             # will sync all settings, is what's run when called by addin
+#'   sync(write = TRUE)   # will immediately try to sync all settings
+#'   sync(write = FALSE)  # dry run, will not write to files or push to gd
+#'   sync()               # will ask for confirmation, then sync all settings
 #' }
 #' mimic_off()
 #' @returns nothing
-sync <- function(write= TRUE, useProgBar = TRUE) {
+sync <- function(write = NULL, useProgBar = TRUE) {
+  if (is.null(write)) {
+    if (interactive()) {
+      if (yesno::yesno("This will pull, try to merge and push your settings; continue?")) {
+        write <- TRUE
+      } else {
+        return(invisible())
+      }
+    } else {
+      write <- FALSE
+    }
+  }
+
+
+
   progBar <- ifelse(useProgBar, progress_bar(6), NULL)
   # pull, merge and push
   addins_gd           <- read_from_gd("addins", progBar = progBar)

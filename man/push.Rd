@@ -5,15 +5,19 @@
 \title{Push Rstudio Settings}
 \usage{
 push(
-  do_addins = TRUE,
-  do_editor_bindings = TRUE,
-  do_rstudio_bindings = TRUE,
+  do_all = FALSE,
+  do_addins = FALSE,
+  do_editor_bindings = FALSE,
+  do_rstudio_bindings = FALSE,
   progBar = NULL
 )
 }
 \arguments{
+\item{do_all}{boolean, if TRUE will push all settings to gd, overwriting them.
+This param overrides the values of the other params. Default is FALSE.}
+
 \item{do_addins, do_editor_bindings, do_rstudio_bindings}{booleans, if TRUE will
-push the respective file. Default is TRUE.}
+push the respective file. Default is FALSE}
 
 \item{progBar}{function, designed to work with [progress_bar()]. Runs after
 each file is pushed.}
@@ -30,7 +34,9 @@ the files directly.
 }
 \examples{
 mimic_on()
-  push()                  # will push all settings to gd, overwriting them
-  push(do_addins = FALSE) # will push only editor and rstudio bindings
+  push()              # does nothing
+  push(do_all = TRUE) # will push all settings to gd, overwriting them
+  push(do_editor_bindings = FALSE, do_rstudio_bindings = FALSE)
+  # will push only editor and rstudio bindings
 mimic_off()
 }

@@ -13,6 +13,9 @@ mimic_off()
 
 is_mimic_on()
 }
+\value{
+nothing
+}
 \description{
 These functions are used to simulate the main functions before truly running
 them, to disable changes to the files and to the cloud.

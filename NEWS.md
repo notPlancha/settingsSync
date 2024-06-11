@@ -1,3 +1,3 @@
-# settingsSync 2.0.0
+# settingsSync 3.0.0
 
 * Initial CRAN submission.

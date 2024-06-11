@@ -4,12 +4,21 @@
 \alias{pull}
 \title{Pull Rstudio Settings}
 \usage{
-pull(addins_gd = NULL, editor_bindings_gd = NULL, rstudio_bindings_gd = NULL)
+pull(
+  all = FALSE,
+  addins_gd = FALSE,
+  editor_bindings_gd = FALSE,
+  rstudio_bindings_gd = FALSE
+)
 }
 \arguments{
-\item{addins_gd, editor_bindings_gd, rstudio_bindings_gd}{character, the json
-string to be written to the respective file; if NULL, will read from
-Google Drive. Can also be FALSE to not write that specific file.}
+\item{all}{boolean, if TRUE will pull all settings from gd, overwriting them.
+This param overrides the values of the other params. Default is FALSE.}
+
+\item{addins_gd, editor_bindings_gd, rstudio_bindings_gd}{character or boolean,
+the json string to be written to the respective file or TRUE/FALSE;
+if TRUE, will read from Google Drive;
+if FALSE to not write that specific file. Default is FALSE}
 }
 \value{
 nothing
@@ -17,18 +26,19 @@ nothing
 \description{
 Pulls Rstudio settings from Google Drive, without pushing. This is just a
 helper function for [sync()], the main function, but can be used alone, although
-this fucntion will not do any checking, and will just override.
+this function will not do any checking, and will just override.
 }
 \examples{
 mimic_on()
-  pull()         # will pull all settings from gd, overwriting them
-  pull(
-   addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
-   editor_bindings_gd= FALSE, rstudio_bindings_gd= FALSE
-  )
+  pull()           # does nothing
+  pull(all = TRUE) # will pull all settings from gd, overwriting them
+  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}',)
   # will write to addins.json the string
-  pull(addins_gd = '{"insertPipeOperator": "Shift+Tab"}')
-  # will write to addins.json the stringand pull the other 2 files from gd
+  pull(
+    addins_gd = '{"insertPipeOperator": "Shift+Tab"}',
+    editor_bindings_gd= TRUE
+  )
+  # will write to addins.json the string and pull editor_bindings from gd
 mimic_off()
 }
 \seealso{

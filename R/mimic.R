@@ -8,6 +8,7 @@
 #' when running [utils::example()]. Internally, these change the options
 #' "ss.mimic", "ss.mimic.local" and "ss.mimic.cloud".
 #'
+#' @returns nothing
 #'
 #' @name mimic-on-off
 #' @examples

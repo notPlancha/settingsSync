@@ -4,12 +4,13 @@
 \alias{sync}
 \title{Sync Rstudio Settings}
 \usage{
-sync(write = TRUE, useProgBar = TRUE)
+sync(write = NULL, useProgBar = TRUE)
 }
 \arguments{
 \item{write}{boolean, if TRUE will write the merged settings to the local files,
 and push them to Google Drive. FALSE essentially just makes conflict resolution,
-without changing any files (basically a dry run). Default is TRUE.}
+without changing any files (basically a dry run). If a value orther than NULL
+is provided, this will skip confirmation.}
 
 \item{useProgBar}{boolean, if TRUE will show a progress bar. Default is TRUE.}
 }
@@ -20,12 +21,18 @@ nothing
 Gets the settings from Google Drive and from the local files, and merges them.
 If there are conflicts, will ask the user to resolve them. Finally, will
 write the merged settings to the local files, and push them to Google Drive.
+Will first ask for confirmation if interactive. This function is what's called
+by the addin.
+}
+\details{
+NOTE: if it's not interactive, it won't write to files because of CRAN policies.
 }
 \examples{
 mimic_on()
 if(interactive()) {
-  sync(write= FALSE) # dry run, will not write to files or push to gd
-  sync()             # will sync all settings, is what's run when called by addin
+  sync(write = TRUE)   # will immediately try to sync all settings
+  sync(write = FALSE)  # dry run, will not write to files or push to gd
+  sync()               # will ask for confirmation, then sync all settings
 }
 mimic_off()
 }

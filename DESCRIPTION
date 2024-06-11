@@ -1,9 +1,10 @@
 Type: Package
 Package: settingsSync
-Title: Rstudio Addin to Sync Settings and Keymaps
-Version: 2.0.0
-Description: Rstudio Addin to sync settings, keymaps and keyboard
-    shortcuts, using Google Drive.
+Title: 'Rstudio' Addin to Sync Settings and Keymaps
+Version: 3.0.0
+Description: Provides a 'Rstudio' addin to download, merge and upload 'Rstudio'
+    settings and keymaps, essencially 'syncing them' at will. It uses Google Drive
+    as a cloud storage to keep the settings and keymaps files.
 License: Apache License (== 2)
 URL: https://github.com/notPlancha/settingsSync
 BugReports: https://github.com/notPlancha/settingsSync/issues
@@ -16,7 +17,8 @@ Imports:
     googledrive,
     jsonlite,
     rappdirs,
-    tibble
+    tibble,
+    yesno
 Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.3.1

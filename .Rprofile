@@ -25,13 +25,16 @@ if (interactive()) {
     cli::cli_inform("ic_disable() to disable debug prints \n ic_enable() for the opposite")
 
   }
-  build_docs     <- \() {devtools::document()}
-  local_check    <- \() {devtools::check()}
+  build_docs     <- \() {devtools::document(roclets = c('rd', 'collate', 'namespace'))}
+  # n sei se este document esta certo mas e o que o rstudio chama
+  local_check    <- \() {devtools::check(remote = T, cran = T)}
   multi_check    <- \() {
+    # melhor e por no github e ver, e ignorar isto
     ch <<- rhub::rhub_check()
     ch
   }
   print_cran_comments <- \(ch) {
+    # ja nao fuinciona, tirar no futuro
     ch$cran_summary()
   }
   #revdep <- \() {revdepcheck::use_revdep()} # n percebi o q faz e n consegui correr
@@ -45,5 +48,10 @@ if (interactive()) {
 
   goodpractice_check <- \() {
     goodpractice::gp()
+  }
+
+  build_manual <- \() {
+    build_docs()
+    callr::rcmd("Rd2pdf", cmdargs = c( ".\\", "--no-clean"))
   }
 }

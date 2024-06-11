@@ -1,3 +1,7 @@
+Copyright (c) 2024 notPlancha
+The project is licensed under the Apache License, Version 2.0.
+You may obtain a copy of if at https://www.apache.org/licenses/LICENSE-2.0
+The rest of this NOTICE is attribution and their respective licenses + conditions.
 --------------------------------------------------------------------------------
 Works under MIT License (MIT)
                             (copyright notices)
@@ -9,6 +13,7 @@ Works under MIT License (MIT)
 - empty_json_file function  Copyright (c) 2023 readr authors
 - cli                       Copyright (c) 2023 cli authors
 - glue                      Copyright (c) 2021 glue authors
+- yesno                     Copyright (c) 2021 yesno authors
 --------------------------------------------------------------------------------
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
