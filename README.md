@@ -11,7 +11,10 @@ Planning to submit to CRAN, but for now you can install it from github:
 devtools::install_github("notPlancha/settingsSync")
 # or
 pak::pak("notPlancha/settingsSync")
+# or pak::pak("notPlancha/settingsSync@2.0.0") If you want a specific version
 ```
+Version 2.0.0 is imcompatible with CRAN policies, because it writes the files by default but it has a generally better api because of it.
+Otherwise it's generally the same IMO.
 
 ## Usage
 You can directly call `settingsSync::sync()`, or use the Rstudio Addin (they do the same thing); and follow the instructions. The extension pulls the settings from Google Drive (if any), tries to merge them with the local settings (the package has conflict resolution), and then pushes the merged settings to Google Drive.
