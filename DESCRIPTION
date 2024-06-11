@@ -1,9 +1,9 @@
 Type: Package
 Package: settingsSync
 Title: 'Rstudio' Addin to Sync Settings and Keymaps
-Version: 3.0.0
+Version: 3.0.1
 Description: Provides a 'Rstudio' addin to download, merge and upload 'Rstudio'
-    settings and keymaps, essencially 'syncing them' at will. It uses Google Drive
+    settings and keymaps, essentially 'syncing them' at will. It uses 'Google Drive'
     as a cloud storage to keep the settings and keymaps files.
 License: Apache License (== 2)
 URL: https://github.com/notPlancha/settingsSync
@@ -24,3 +24,6 @@ NeedsCompilation: no
 RoxygenNote: 7.3.1
 Authors@R: 
     person("André", "Plancha", , "andre.plancha@hotmail.com", role = c("aut", "cre"))
+Suggests:
+    spelling
+Language: en-US

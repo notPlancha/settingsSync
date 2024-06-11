@@ -4,9 +4,9 @@
 #' These functions are used to simulate the main functions before truly running
 #' them, to disable changes to the files and to the cloud.
 #'
-#' This are used in most examples so the user settings don't change
+#' These are used in most examples, so the user settings don't change
 #' when running [utils::example()]. Internally, these change the options
-#' "ss.mimic", "ss.mimic.local" and "ss.mimic.cloud".
+#' `ss.mimic`, `ss.mimic.local` and `ss.mimic.cloud`.
 #'
 #' @returns nothing
 #'

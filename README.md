@@ -13,7 +13,7 @@ devtools::install_github("notPlancha/settingsSync")
 pak::pak("notPlancha/settingsSync")
 # or pak::pak("notPlancha/settingsSync@2.0.0") If you want a specific version
 ```
-Version 2.0.0 is imcompatible with CRAN policies, because it writes the files by default but it has a generally better api because of it.
+Version 2.0.0 is incompatible with CRAN policies, because it writes the files by default but it has a generally better api because of it.
 Otherwise it's generally the same IMO.
 
 ## Usage

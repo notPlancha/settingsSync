@@ -28,7 +28,7 @@ nothing
 \description{
 Pushes Rstudio settings to Google Drive, without pulling. This is just a
 helper function for [sync()], the main function, but can be used alone, although
-this fucntion will not do any checking, and will just override.
+this function will not do any checking, and will just override.
 Because of the way [googledrive::drive_put] is built, this function reads from
 the files directly.
 }

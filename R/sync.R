@@ -2,7 +2,7 @@
 #'
 #' Pushes Rstudio settings to Google Drive, without pulling. This is just a
 #' helper function for [sync()], the main function, but can be used alone, although
-#' this fucntion will not do any checking, and will just override.
+#' this function will not do any checking, and will just override.
 #' Because of the way [googledrive::drive_put] is built, this function reads from
 #' the files directly.
 #'
@@ -136,7 +136,7 @@ pull <- function(
 #'
 #' @param write boolean, if TRUE will write the merged settings to the local files,
 #' and push them to Google Drive. FALSE essentially just makes conflict resolution,
-#' without changing any files (basically a dry run). If a value orther than NULL
+#' without changing any files (basically a dry run). If a value other than NULL
 #' is provided, this will skip confirmation.
 #' @param useProgBar boolean, if TRUE will show a progress bar. Default is TRUE.
 #' @export
@@ -298,7 +298,7 @@ read_from_local <- function(what) {
 #'
 #' @param df A merged data frame with 2 rows, with the contents of the local and cloud files
 #'
-#' @returns df, ready to be jsoned, without conflicts
+#' @returns df, ready to be json'ed, without conflicts
 #'
 #' @seealso [sync()], [choose()]
 #' @noRd

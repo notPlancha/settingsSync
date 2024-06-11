@@ -9,7 +9,7 @@ sync(write = NULL, useProgBar = TRUE)
 \arguments{
 \item{write}{boolean, if TRUE will write the merged settings to the local files,
 and push them to Google Drive. FALSE essentially just makes conflict resolution,
-without changing any files (basically a dry run). If a value orther than NULL
+without changing any files (basically a dry run). If a value other than NULL
 is provided, this will skip confirmation.}
 
 \item{useProgBar}{boolean, if TRUE will show a progress bar. Default is TRUE.}
