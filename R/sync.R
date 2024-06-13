@@ -164,8 +164,6 @@ sync <- function(write = NULL, useProgBar = TRUE) {
     }
   }
 
-
-
   progBar <- ifelse(useProgBar, progress_bar(6), NULL)
   # pull, merge and push
   addins_gd           <- read_from_gd("addins", progBar = progBar)
@@ -256,7 +254,7 @@ read_from_gd <- function(what, progBar = NULL) {
     gd$get()
   if (nrow(file) == 0) {return(data.frame())}
   file |>
-    gd$read(encoding = "UTF-8") |>
+    gd$read() |>
     jsonlite::fromJSON() |>
     as.data.frame() -> ret
   if (progBar |> is.null() |> isFALSE()) progBar()

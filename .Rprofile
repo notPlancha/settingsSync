@@ -4,7 +4,7 @@ if (interactive()) {
   require(conflicted)
   require(desc)
   require(icecream)
-  require(rhub)
+  # require(rhub)
   options(icecream.always.include.context = T)
   options(error = function() traceback())
   # pak("r-lib/desc") # theres a bug
@@ -23,7 +23,6 @@ if (interactive()) {
       mimic_off()
     }
     cli::cli_inform("ic_disable() to disable debug prints \n ic_enable() for the opposite")
-
   }
   build_docs     <- \() {devtools::document(roclets = c('rd', 'collate', 'namespace'))}
   # n sei se este document esta certo mas e o que o rstudio chama

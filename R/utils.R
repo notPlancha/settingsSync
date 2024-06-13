@@ -33,9 +33,9 @@ rstudio_path <- function() {
 }
 
 #'@noRd
-read_file <- function(path) {
+read_file <- function(path, encoding = "UTF-8") {
   if (file.exists(path)) {
-    readLines(path, warn = FALSE) |> paste(collapse = "\n")
+    readLines(path, warn = FALSE, encoding = encoding) |> paste(collapse = "\n")
   } else {
     character()
   }
