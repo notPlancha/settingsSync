@@ -6,9 +6,8 @@
 R package and Rstudio Addin to sync its settings, keymaps and keyboard shortcuts, using Google Drive.
 
 ## Installation
-Planning to submit to CRAN, but for now you can install it from github:
 ```r
-devtools::install_github("notPlancha/settingsSync")
+install.packages("settinsSync")
 # or
 pak::pak("notPlancha/settingsSync")
 # or pak::pak("notPlancha/settingsSync@2.0.0") If you want a specific version
@@ -28,7 +27,10 @@ pixi install
 pixi run hook-install
 ```
 should do the trick. After that open the project in Rstudio. If you want to 
-install the exact packages, then run `pak::lockfile_install()`.
+install the exact package versions I used, then run `pak::lockfile_install()`.
+
+All of this is optional, it just helps upkeep for me. If you know what you're doing,
+don't worry about it.
 
 > [!NOTE]  
 > I didn't add R to pixi because [Windows versions are not updated](https://github.com/conda-forge/r-base-feedstock/issues/248) and they don't work well  with rstudio (and [rstudio in conda is also not updated as of writing](https://github.com/conda-forge/rstudio-feedstock/issues/29)).
