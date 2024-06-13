@@ -1,7 +1,7 @@
 Type: Package
 Package: settingsSync
 Title: 'Rstudio' Addin to Sync Settings and Keymaps
-Version: 3.0.2
+Version: 3.0.2-1
 Description: Provides a 'Rstudio' addin to download, merge and upload 'Rstudio'
     settings and keymaps, essentially 'syncing them' at will. It uses 'Google Drive'
     as a cloud storage to keep the settings and keymaps files.
